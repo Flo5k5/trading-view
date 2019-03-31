@@ -1,0 +1,17 @@
+
+- W - 3D - D - 12H - 4H 
+- Stoch RSI crossing
+- Stoch crossing
+- RSI resistance / support, 30 / 40 / 50
+- MA cross / confluence or MA support / resistance
+- MA targets on LTF / HTF
+- Trendlines / support / resistance
+- Triangles
+- Volume
+- Orderbook depth - walls - good entry
+- More info:
+    * RVi to confirm Stoch and Stoch RSI
+    * CMF starting uptrend
+    * MACD crossed in any way
+    * OBV
+    * Net inflow 30D 

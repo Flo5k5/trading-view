@@ -15,3 +15,13 @@
     * MACD crossed in any way
     * OBV
     * Net inflow 30D 
+
+
+
+Stoch RSI 14 14 3 2 => W
+
+Calcul % différence entre le low en D et la LSMA 9 ou 21 en histogramme comme MACD
+
+low et LSMA, MACD custom et stoch rsi custom
+
+histogramme % variation daily against yesterday

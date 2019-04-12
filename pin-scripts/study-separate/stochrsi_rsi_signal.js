@@ -59,3 +59,38 @@ plot100 = plot(series=100, transp=100)
 
 fill(plot1=plot0, plot2=plot20, color=green, transp=80)
 fill(plot1=plot80, plot2=plot100, color=red, transp=80)
+
+////////////////////////////////////////////////////////////////////////////////
+// Support / Resistance
+//
+// https://backtest-rookies.com/2018/10/05/tradingview-support-and-resistance-indicator/
+//
+
+left = 5
+right = 5
+quick_right = 3 // Used to try and detect a more recent significant swing.
+ 
+pivot_high = pivothigh(rsi1,left,right)
+pivot_lows = pivotlow(rsi1, left,right)
+ 
+quick_pivot_high = pivothigh(rsi1,left,quick_right)
+quick_pivot_lows = pivotlow(rsi1, left,quick_right)
+ 
+level1 = valuewhen(quick_pivot_high, rsi1[quick_right], 0)
+level2 = valuewhen(quick_pivot_lows, rsi1[quick_right], 0)
+level3 = valuewhen(pivot_high, rsi1[right], 0)
+level4 = valuewhen(pivot_lows, rsi1[right], 0)
+level5 = valuewhen(pivot_high, rsi1[right], 1)
+level6 = valuewhen(pivot_lows, rsi1[right], 1)
+level7 = valuewhen(pivot_high, rsi1[right], 2)
+level8 = valuewhen(pivot_lows, rsi1[right], 2)
+
+plot(level1, style=line, show_last=1, color=white, trackprice=true, editable=false)
+plot(level2, style=line, show_last=1, color=white, trackprice=true, editable=false)
+plot(level3, style=line, show_last=1, color=white, trackprice=true, editable=false)
+plot(level4, style=line, show_last=1, color=white, trackprice=true, editable=false)
+plot(level5, style=line, show_last=1, color=white, trackprice=true, editable=false)
+plot(level6, style=line, show_last=1, color=white, trackprice=true, editable=false)
+plot(level7, style=line, show_last=1, color=white, trackprice=true, editable=false)
+plot(level8, style=line, show_last=1, color=white, trackprice=true, editable=false)
+

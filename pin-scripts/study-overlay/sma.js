@@ -1,50 +1,50 @@
-//@version=3
+//@version=4
 study(title="SMA Bundle", shorttitle="SMA", overlay=true)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Inputs
 
-dummy0                             = input(title="//////////////////////////////", type=bool, defval=false)
-inputShowSmas                      = input(title="MAs", type=bool, defval=true)
-dummy1                             = input(title="//////////////////////////////", type=bool, defval=false)
+dummy0                             = input(title="//////////////////////////////", type=input.bool, defval=false)
+inputShowSmas                      = input(title="MAs", type=input.bool, defval=true)
+dummy1                             = input(title="//////////////////////////////", type=input.bool, defval=false)
 inputSmoothing                     = input(title="Smoothing", defval="SMA", options=["RMA", "SMA", "EMA", "WMA", "VWMA", "SMMA", "HullMA", "LSMA", "DEMA", "TEMA"])
 inputAlmaOffset                    = input(title="ALMA Offset", defval=0.85, minval=1)
 inputAlmaSigma                     = input(title="ALMA Sigma", defval=6, minval=0)
-inputSma1                          = input(title="MA 1", type=integer, defval=9, minval=1)
-inputSma2                          = input(title="MA 2", type=integer, defval=21, minval=1)
-inputSma3                          = input(title="MA 3", type=integer, defval=50, minval=1)
-inputSma4                          = input(title="MA 4", type=integer, defval=100, minval=1)
-inputSma5                          = input(title="MA 5", type=integer, defval=200, minval=1)
-inputLinewidth                     = input(title="Line width", type=integer, defval=1, minval=1, maxval=5)
-inputSmaTransparency               = input(title="MA transparency", type=integer, defval=20, minval=0, maxval=100)
-dummy2                             = input(title="//////////////////////////////", type=bool, defval=false)
-inputShowStochRsiCrosses           = input(title="Stoch RSI crosses", type=bool, defval=true)
-dummy3                             = input(title="//////////////////////////////", type=bool, defval=false)
-inputOffsetCross                   = input(title="Crosses offset", defval=0, type=integer)
-inputSmoothK                       = input(type=integer, defval=2, minval=1)
-inputSmoothD                       = input(type=integer, defval=2, minval=1)
-inputLengthRsi                     = input(type=integer, defval=14, minval=1)
-inputLengthStoch                   = input(type=integer, defval=14, minval=1)
-inputRsiBullTreshold               = input(title="RSI bull treshold", type=integer, defval=40, minval=0, maxval=100)
-inputRsiBearTreshold               = input(title="RSI bear treshold", type=integer, defval=45, minval=0, maxval=100)
+inputSma1                          = input(title="MA 1", type=input.integer, defval=9, minval=1)
+inputSma2                          = input(title="MA 2", type=input.integer, defval=21, minval=1)
+inputSma3                          = input(title="MA 3", type=input.integer, defval=50, minval=1)
+inputSma4                          = input(title="MA 4", type=input.integer, defval=100, minval=1)
+inputSma5                          = input(title="MA 5", type=input.integer, defval=200, minval=1)
+inputLinewidth                     = input(title="Line width", type=input.integer, defval=1, minval=1, maxval=5)
+inputSmaTransparency               = input(title="MA transparency", type=input.integer, defval=20, minval=0, maxval=100)
+dummy2                             = input(title="//////////////////////////////", type=input.bool, defval=false)
+inputShowStochRsiCrosses           = input(title="Stoch RSI crosses", type=input.bool, defval=true)
+dummy3                             = input(title="//////////////////////////////", type=input.bool, defval=false)
+inputOffsetCross                   = input(title="Crosses offset", defval=0, type=input.integer)
+inputSmoothK                       = input(type=input.integer, defval=2, minval=1)
+inputSmoothD                       = input(type=input.integer, defval=3, minval=1)
+inputLengthRsi                     = input(type=input.integer, defval=14, minval=1)
+inputLengthStoch                   = input(type=input.integer, defval=14, minval=1)
+inputRsiBullTreshold               = input(title="RSI bull treshold", type=input.integer, defval=40, minval=0, maxval=100)
+inputRsiBearTreshold               = input(title="RSI bear treshold", type=input.integer, defval=45, minval=0, maxval=100)
 inputRsiSrc                        = input(title="RSI Source", defval=close)
-inputShow1H                        = input(title="1H signal", type=bool, defval=false)
-inputShow4H                        = input(title="4H signal", type=bool, defval=true)
-inputShow1D                        = input(title="1D signal", type=bool, defval=true)
-inputShow1W                        = input(title="1W signal", type=bool, defval=true)
-dummy8                             = input(title="//////////////////////////////", type=bool, defval=false)
-inputColorBg                       = input(title="Color background", type=bool, defval=true)
-dummy9                             = input(title="//////////////////////////////", type=bool, defval=false)
-inputDiff                          = input(title="Difference K and D", type=integer, defval=16, minval=0)
-inputShowOnlyCurrentBar            = input(title="Color only current bar", type=bool, defval=false)
-dummy4                             = input(title="//////////////////////////////", type=bool, defval=false)
-inputShowSupportResistance         = input(title="Show support / resistance", type=bool, defval=true)
-dummy5                             = input(title="//////////////////////////////", type=bool, defval=false)
-inputSupportResistanceTransparency = input(title="Support / resistance transparency", type=integer, defval=0, minval=0, maxval=100)
-dummy6                             = input(title="//////////////////////////////", type=bool, defval=false)
-inputShowCandlePatterns            = input(title="Show candlestick patterns", type=bool, defval=false)
-dummy7                             = input(title="//////////////////////////////", type=bool, defval=false)
-inputCandlePatternsTransparency    = input(title="Candlestick patterns transparency", type=integer, defval=70, minval=0, maxval=100)
+inputShow1H                        = input(title="1H signal", type=input.bool, defval=false)
+inputShow4H                        = input(title="4H signal", type=input.bool, defval=true)
+inputShow1D                        = input(title="1D signal", type=input.bool, defval=true)
+inputShow1W                        = input(title="1W signal", type=input.bool, defval=true)
+dummy8                             = input(title="//////////////////////////////", type=input.bool, defval=false)
+inputColorBg                       = input(title="Color background", type=input.bool, defval=true)
+dummy9                             = input(title="//////////////////////////////", type=input.bool, defval=false)
+inputDiff                          = input(title="Difference K and D", type=input.integer, defval=16, minval=0)
+inputShowOnlyCurrentBar            = input(title="Color only current bar", type=input.bool, defval=false)
+dummy4                             = input(title="//////////////////////////////", type=input.bool, defval=false)
+inputShowSupportResistance         = input(title="Show support / resistance", type=input.bool, defval=true)
+dummy5                             = input(title="//////////////////////////////", type=input.bool, defval=false)
+inputSupportResistanceTransparency = input(title="Support / resistance transparency", type=input.integer, defval=0, minval=0, maxval=100)
+dummy6                             = input(title="//////////////////////////////", type=input.bool, defval=false)
+inputShowCandlePatterns            = input(title="Show candlestick patterns", type=input.bool, defval=false)
+dummy7                             = input(title="//////////////////////////////", type=input.bool, defval=false)
+inputCandlePatternsTransparency    = input(title="Candlestick patterns transparency", type=input.integer, defval=70, minval=0, maxval=100)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Functions
@@ -93,21 +93,19 @@ get_stoch_rsi(rsiSource) =>
     d   = sma(k, inputSmoothD)
     [rsi, k, d]
 
-get_current_data(timeFrame) => security(tickerid, timeFrame, inputRsiSrc)
+get_current_data(timeFrame) => security(syminfo.tickerid, timeFrame, inputRsiSrc)
 
 get_stoch_rsi_cross(rsiSource) => 
     [rsi, k, d] = get_stoch_rsi(rsiSource)
-    xlBearCross = crossunder(k, d) and d >= 80 and d <= 100 and rsi >= inputRsiBearTreshold
-    lBearCross  = crossunder(k, d) and d >= 80 and d <= 100 and rsi < inputRsiBearTreshold
-    mBearCross  = crossunder(k, d) and d > 20 and d < 80 
-    sBearCross  = crossunder(k, d) and d >= 0 and d <= 20 and rsi < inputRsiBullTreshold
-    xsBearCross = crossunder(k, d) and d >= 0 and d <= 20 and rsi >= inputRsiBullTreshold
-    xlBullCross = crossover(k, d) and d >=0 and d <= 25 and rsi <= inputRsiBullTreshold
-    lBullCross  = crossover(k, d) and d >=0 and d <= 25 and rsi > inputRsiBullTreshold
-    mBullCross  = crossover(k, d) and d > 25 and d < 80
-    sBullCross  = crossover(k, d) and d >= 80 and d <= 100 and rsi < inputRsiBearTreshold
-    xsBullCross = crossover(k, d) and d >= 80 and d <= 100 and rsi >= inputRsiBearTreshold
-    [rsi, k, d, xlBearCross, lBearCross, mBearCross, sBearCross, xsBearCross, xlBullCross, lBullCross, mBullCross, sBullCross, xsBullCross]
+    lBearCross = crossunder(k, d) and d >= 75 and d <= 100
+    // mBearCross  = crossunder(k, d) and d > 20 and d < 80
+    // sBearCross = crossunder(k, d) and d >= 0 and d <= 20
+    sBearCross = crossunder(k, d) and d >= 20 and d < 75
+    lBullCross = crossover(k, d) and d >=0 and d < 20
+    // lBullCross = crossover(k, d) and d >=0 and d <= 20
+    // mBullCross  = crossover(k, d) and d > 20 and d < 80
+    sBullCross  = crossover(k, d) and d >= 0 and d <= 100
+    [rsi, k, d, lBearCross, sBearCross, lBullCross, sBullCross]
 
 ////////////////////////////////////////////////////////////////////////////////
 // Variables
@@ -147,22 +145,67 @@ plot(inputShowSmas ? ma5 : na, color=colorRed, linewidth=inputLinewidth, transp=
 // MACD Fast=8 Slow=9 Source=close Signal smoothing=9
 
 // symbol1H = get_current_data("1H")
-// symbol4H = get_current_data("4H")
+symbol4H = get_current_data("4H")
 // symbol1D = get_current_data("1D")
 // symbol1W = get_current_data("1W")
 
-[rsi1H, k1H, d1H, xlBearCross1H, lBearCross1H, mBearCross1H, sBearCross1H, xsBearCross1H, xlBullCross1H, lBullCross1H, mBullCross1H, sBullCross1H, xsBullCross1H] = get_stoch_rsi_cross(inputRsiSrc)
+[rsi1H, k1H, d1H, lBearCross1H, sBearCross1H, lBullCross1H, sBullCross1H] = get_stoch_rsi_cross(inputRsiSrc)
 
-plotshape(inputShowStochRsiCrosses and xlBearCross1H, style=shape.triangledown, text="5", transp=20, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="XL sell signal Stoch RSI")
-plotshape(inputShowStochRsiCrosses and lBearCross1H, style=shape.triangledown, text="4", transp=20, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="L sell signal Stoch RSI")
-plotshape(inputShowStochRsiCrosses and mBearCross1H, style=shape.triangledown, text="3", transp=70, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="M sell signal Stoch RSI")
-plotshape(inputShowStochRsiCrosses and sBearCross1H, style=shape.triangledown, text="2", transp=70, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="S sell signal Stoch RSI")
-plotshape(inputShowStochRsiCrosses and xsBearCross1H, style=shape.triangledown, text="1", transp=70, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="XS sell signal Stoch RSI")
-plotshape(inputShowStochRsiCrosses and xlBullCross1H, style=shape.triangleup, text="5", transp=20, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="XL buy signal Stoch RSI")
-plotshape(inputShowStochRsiCrosses and lBullCross1H, style=shape.triangleup, text="4", transp=20, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="L buy signal Stoch RSI")
-plotshape(inputShowStochRsiCrosses and mBullCross1H, style=shape.triangleup, text="3", transp=70, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="M buy signal Stoch RSI")
-plotshape(inputShowStochRsiCrosses and sBullCross1H, style=shape.triangleup, text="2", transp=70, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="S buy signal Stoch RSI")
-plotshape(inputShowStochRsiCrosses and xsBullCross1H, style=shape.triangleup, text="1", transp=70, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="XS buy signal Stoch RSI")
+if(inputShowStochRsiCrosses and lBearCross1H)
+    label.new(bar_index, close, yloc=yloc.price, style=label.style_circle, text='C', color=color.new(colorRed, 0), textcolor=color.new(colorRed, 0), size=size.auto)
+
+if(inputShowStochRsiCrosses and sBearCross1H)
+    label.new(bar_index, close, yloc=yloc.price, style=label.style_circle, text='C', color=color.new(colorRed, 50), textcolor=color.new(colorRed, 50), size=size.auto)
+
+
+if(inputShowStochRsiCrosses and lBullCross1H)
+    label.new(bar_index, close, yloc=yloc.price, style=label.style_circle, text='C', color=color.new(colorGreen, 0),  textcolor=color.new(colorGreen, 0), size=size.auto)
+
+if(inputShowStochRsiCrosses and sBullCross1H)
+    label.new(bar_index, close, yloc=yloc.price, style=label.style_circle, text='C', color=color.new(color.green, 50),  textcolor=color.new(color.green, 50), size=size.auto)
+    // label.new(bar_index, na, yloc=close > open ? yloc.abovebar : yloc.belowbar, style=label.style_circle, text='C', color=color.new(colorGreen, 70),  textcolor=color.new(colorGreen, 70), size=size.auto)
+    // label.new(bar_index, na, yloc=close > open ? yloc.abovebar : yloc.belowbar, style=close > open ? label.style_triangledown : label.style_triangleup, text='C', color=color.new(colorGreen, 60),  textcolor=color.new(colorGreen, 60), size=size.auto)
+
+// plotshape(inputShowStochRsiCrosses and xlBearCross1H, style=shape.triangledown, text="5", transp=20, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="XL sell signal Stoch RSI")
+// plotshape(inputShowStochRsiCrosses and lBearCross1H, style=close > open ? shape.triangledown : shape.triangleup, transp=0, offset=inputOffsetCross, location=close > open ? location.abovebar : location.belowbar, color=colorRed, editable=false, size=size.tiny, title="L sell signal Stoch RSI")
+// // // plotshape(inputShowStochRsiCrosses and mBearCross1H, style=shape.triangledown, text="3", transp=70, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="M sell signal Stoch RSI")
+// plotshape(inputShowStochRsiCrosses and sBearCross1H, style=close > open ? shape.triangledown : shape.triangleup, transp=60, offset=inputOffsetCross, location=close > open ? location.abovebar : location.belowbar, color=colorRed, editable=false, size=size.tiny, title="S sell signal Stoch RSI")
+// // // plotshape(inputShowStochRsiCrosses and xsBearCross1H, style=shape.triangledown, text="1", transp=70, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="XS sell signal Stoch RSI")
+// // // plotshape(inputShowStochRsiCrosses and xlBullCross1H, style=shape.triangleup, text="5", transp=20, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="XL buy signal Stoch RSI")
+// plotshape(inputShowStochRsiCrosses and lBullCross1H, style=close > open ? shape.triangledown : shape.triangleup, transp=0, offset=inputOffsetCross, location=close > open ? location.abovebar : location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="L buy signal Stoch RSI")
+// // // plotshape(inputShowStochRsiCrosses and mBullCross1H, style=shape.triangleup, text="3", transp=70, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="M buy signal Stoch RSI")
+// plotshape(inputShowStochRsiCrosses and sBullCross1H, style=close > open ? shape.triangledown : shape.triangleup, transp=60, offset=inputOffsetCross, location=close > open ? location.abovebar : location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="S buy signal Stoch RSI")
+// // plotshape(inputShowStochRsiCrosses and xsBullCross1H, style=shape.triangleup, text="1", transp=70, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="XS buy signal Stoch RSI")
+
+[rsi4H, k4H, d4H, lBearCross4H, sBearCross4H, lBullCross4H, sBullCross4H] = get_stoch_rsi_cross(symbol4H)
+
+// if(inputShowStochRsiCrosses and lBearCross4H)
+//     label.new(bar_index, na, yloc=yloc.abovebar, style=label.style_triangledown, text="4h", color=color.new(colorRed, 20), size=size.tiny)
+
+// if(inputShowStochRsiCrosses and sBearCross4H)
+//     label.new(bar_index, na, yloc=yloc.abovebar, style=label.style_triangledown, text="4h", color=color.new(colorRed, 70), size=size.tiny)
+
+
+// if(inputShowStochRsiCrosses and lBullCross4H)
+//     label.new(bar_index, na, yloc=yloc.belowbar, style=label.style_triangleup, text="4h", color=color.new(colorGreen, 20), size=size.tiny)
+
+// if(inputShowStochRsiCrosses and sBullCross4H)
+//     label.new(bar_index, na, yloc=yloc.belowbar, style=label.style_triangleup, text="4h", color=color.new(colorGreen, 70), size=size.tiny)
+
+// plotshape(inputShowStochRsiCrosses and xlBearCross4H, style=shape.triangledown, text="5", transp=20, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="XL sell signal Stoch RSI")
+// plotshape(inputShowStochRsiCrosses and lBearCross4H, style=shape.triangledown, text="4", transp=20, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="L sell signal Stoch RSI 4H")
+// plotshape(inputShowStochRsiCrosses and mBearCross4H, style=shape.triangledown, text="3", transp=70, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="M sell signal Stoch RSI 4H")
+// plotshape(inputShowStochRsiCrosses and sBearCross4H, style=shape.triangledown, text="2", transp=70, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="S sell signal Stoch RSI 4H")
+// plotshape(inputShowStochRsiCrosses and xsBearCross4H, style=shape.triangledown, text="1", transp=70, offset=inputOffsetCross, location=location.abovebar, color=colorRed, editable=false, size=size.tiny, title="XS sell signal Stoch RSI")
+// plotshape(inputShowStochRsiCrosses and xlBullCross4H, style=shape.triangleup, text="5", transp=20, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="XL buy signal Stoch RSI")
+// plotshape(inputShowStochRsiCrosses and lBullCross4H, style=shape.triangleup, text="4", transp=20, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="L buy signal Stoch RSI 4H")
+// plotshape(inputShowStochRsiCrosses and mBullCross4H, style=shape.triangleup, text="3", transp=70, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="M buy signal Stoch RSI 4H")
+// plotshape(inputShowStochRsiCrosses and sBullCross4H, style=shape.triangleup, text="2", transp=70, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="S buy signal Stoch RSI 3H")
+// plotshape(inputShowStochRsiCrosses and xsBullCross4H, style=shape.triangleup, text="1", transp=70, offset=inputOffsetCross, location=location.belowbar, color=colorGreen, editable=false, size=size.tiny, title="XS buy signal Stoch RSI")
+
+alertcondition(lBearCross1H, title='Sell signal', message='Sell signal')
+alertcondition(lBullCross1H, title='Buy signal', message='Buy signal')
+alertcondition(lBullCross1H or lBearCross1H, title='Buy or sell signal', message='Buy or sell signal')
 
 ////////////////////////////////////////////////////////////////////////////////
 // Current candle background
@@ -170,8 +213,8 @@ plotshape(inputShowStochRsiCrosses and xsBullCross1H, style=shape.triangleup, te
 diffDK1H           = d1H - k1H
 diffKD1H           = k1H - d1H
 isBgColorShown     = ((inputShowOnlyCurrentBar and barstate.isrealtime) or not inputShowOnlyCurrentBar) and inputColorBg
-backgroundColorBar = (isBgColorShown and k1H <= d1H and diffDK1H >= 0 and diffDK1H <= inputDiff and d1H <= 30 and rsi1H <= 40) ? green :
-     (isBgColorShown and k1H >= d1H and diffKD1H >= 0 and diffKD1H <= inputDiff and d1H >= 70 and rsi1H >= 45) ? red :
+backgroundColorBar = (isBgColorShown and k1H <= d1H and diffDK1H >= 0 and diffDK1H <= inputDiff and d1H <= 30 and rsi1H <= 40) ? color.green :
+     (isBgColorShown and k1H >= d1H and diffKD1H >= 0 and diffKD1H <= inputDiff and d1H >= 70 and rsi1H >= 45) ? color.red :
      na
 
 bgcolor(color=backgroundColorBar, transp=80)
@@ -201,14 +244,51 @@ level6 = valuewhen(pivot_lows, low[right], 1)
 level7 = valuewhen(pivot_high, high[right], 2)
 level8 = valuewhen(pivot_lows, low[right], 2)
 
-plot(inputShowSupportResistance ? level1 : na, style=line, show_last=1, color=white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
-plot(inputShowSupportResistance ? level2 : na, style=line, show_last=1, color=white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
-plot(inputShowSupportResistance ? level3 : na, style=line, show_last=1, color=white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
-plot(inputShowSupportResistance ? level4 : na, style=line, show_last=1, color=white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
-plot(inputShowSupportResistance ? level5 : na, style=line, show_last=1, color=white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
-plot(inputShowSupportResistance ? level6 : na, style=line, show_last=1, color=white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
-plot(inputShowSupportResistance ? level7 : na, style=line, show_last=1, color=white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
-plot(inputShowSupportResistance ? level8 : na, style=line, show_last=1, color=white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
+plot(inputShowSupportResistance ? level1 : na, style=plot.style_line, show_last=1, color=color.white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
+plot(inputShowSupportResistance ? level2 : na, style=plot.style_line, show_last=1, color=color.white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
+plot(inputShowSupportResistance ? level3 : na, style=plot.style_line, show_last=1, color=color.white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
+plot(inputShowSupportResistance ? level4 : na, style=plot.style_line, show_last=1, color=color.white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
+plot(inputShowSupportResistance ? level5 : na, style=plot.style_line, show_last=1, color=color.white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
+plot(inputShowSupportResistance ? level6 : na, style=plot.style_line, show_last=1, color=color.white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
+plot(inputShowSupportResistance ? level7 : na, style=plot.style_line, show_last=1, color=color.white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
+plot(inputShowSupportResistance ? level8 : na, style=plot.style_line, show_last=1, color=color.white, trackprice=true, editable=false, transp=inputSupportResistanceTransparency)
+
+////////////////////////////////////////////////////////////////////////////////
+// Open High Low HTF
+//
+// https://www.tradingview.com/script/F8yZU30q-Open-High-Low-HTF/
+// 
+
+// holds the price levels
+openPriceD = security(syminfo.tickerid, 'D', open)
+highPriceD = security(syminfo.tickerid, 'D', high)
+lowPriceD = security(syminfo.tickerid, 'D', low)
+openPriceW = security(syminfo.tickerid, 'W', open)
+highPriceW = security(syminfo.tickerid, 'W', high)
+lowPriceW = security(syminfo.tickerid, 'W', low)
+// openPriceM = security(syminfo.tickerid, 'M', open)
+// highPriceM = security(syminfo.tickerid, 'M', high)
+// lowPriceM = security(syminfo.tickerid, 'M', low)
+
+
+//plot levels
+// label.new(bar_index, openPriceD ? openPriceD : na, style=label.style_circle, color=color.new(colorGreen, 70), size=size.auto)
+// label.new(bar_index, highPriceD ? highPriceD : na, style=label.style_circle, color=color.new(colorGreen, 70), size=size.auto)
+// label.new(bar_index, lowPriceD ? lowPriceD : na, style=label.style_circle, color=color.new(colorRed, 70), size=size.auto)
+
+// label.new(bar_index, openPriceW ? openPriceW : na, style=label.style_cross, color=color.new(colorGreen, 70), size=size.auto)
+// label.new(bar_index, highPriceW ? highPriceW : na, style=label.style_cross, color=color.new(colorGreen, 70), size=size.auto)
+// label.new(bar_index, lowPriceW ? lowPriceW : na, style=label.style_cross, color=color.new(colorRed, 70), size=size.auto)
+
+plot(openPriceD and not timeframe.isdaily and not timeframe.isweekly ? openPriceD : na, title="Daily Open", style=plot.style_circles, linewidth=1, color=color.orange)
+plot(highPriceD and not timeframe.isdaily and not timeframe.isweekly ? highPriceD : na, title="Daily High", style=plot.style_circles, linewidth=1, color=color.orange)
+plot(lowPriceD and not timeframe.isdaily and not timeframe.isweekly ? lowPriceD :  na, title="Daily Low",  style=plot.style_circles, linewidth=1, color=color.red)
+plot(openPriceW and not timeframe.isweekly ? openPriceW : na, title="Weekly Open", style=plot.style_cross, linewidth=1, color=color.orange)
+plot(highPriceW and not timeframe.isweekly ? highPriceW : na, title="Weekly High", style=plot.style_cross, linewidth=1, color=color.orange)
+plot(lowPriceW  and not timeframe.isweekly ? lowPriceW :  na, title="Weekly Low",  style=plot.style_cross, linewidth=1, color=color.red)
+// plot(openPriceM ? openPriceM : na, title="Monthly Open", style=plot.style_circles, linewidth=3, color=colorGreen)
+// plot(highPriceM ? highPriceM : na, title="Monthly High", style=plot.style_circles, linewidth=3, color=colorGreen)
+// plot(lowPriceM  ? lowPriceM :  na, title="Monthly Low",  style=plot.style_circles, linewidth=3, color=colorRed)
 
 ////////////////////////////////////////////////////////////////////////////////
 // https://www.tradingview.com/script/GbM6d1PJ-Separate-Volume-Indicator/

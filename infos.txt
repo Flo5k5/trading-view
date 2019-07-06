@@ -25,3 +25,13 @@ Calcul % différence entre le low en D et la LSMA 9 ou 21 en histogramme comme M
 low et LSMA, MACD custom et stoch rsi custom
 
 histogramme % variation daily against yesterday
+
+
+cross MA7 MA25 on 4H like on binance (link/usdt)
+
+cross stoch rsi (14 14 3 2 && 14 14 3 3 for sells) when rsi (7?) is below 40 or above 60/70
+
+macd 9 12 9
+
+
+stoch rsi =  k3 d3 rsi7 stoch6 && rsi < 45

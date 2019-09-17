@@ -1,5 +1,6 @@
 //@version=4
-strategy(title="SMA Bundle", shorttitle="SMA", overlay=true, default_qty_type=strategy.percent_of_equity ,default_qty_value=100, initial_capital=2000)
+// strategy(title="SMA Bundle", shorttitle="SMA", overlay=true, default_qty_type=strategy.percent_of_equity ,default_qty_value=100, initial_capital=2000)
+study(title="SMA Bundle", shorttitle="SMA", overlay=true)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Inputs
@@ -15,7 +16,7 @@ inputSma2                          = input(title="MA 2", type=input.integer, def
 inputSma3                          = input(title="MA 3", type=input.integer, defval=50, minval=1)
 inputSma4                          = input(title="MA 4", type=input.integer, defval=100, minval=1)
 inputSma5                          = input(title="MA 5", type=input.integer, defval=200, minval=1)
-inputLinewidth                     = input(title="Line width", type=input.integer, defval=1, minval=1, maxval=5)
+inputLinewidth                     = input(title="Line width", type=input.integer, defval=3, minval=1, maxval=5)
 inputSmaTransparency               = input(title="MA transparency", type=input.integer, defval=20, minval=0, maxval=100)
 dummy2                             = input(title="//////////////////////////////", type=input.bool, defval=false)
 inputShowBB                        = input(title="Bollinger Bands", type=input.bool, defval=true)
@@ -27,10 +28,10 @@ dummy22                            = input(title="//////////////////////////////
 inputShowStochRsiCrosses           = input(title="Stoch RSI crosses", type=input.bool, defval=true)
 dummy3                             = input(title="//////////////////////////////", type=input.bool, defval=false)
 inputOffsetCross                   = input(title="Crosses offset", defval=0, type=input.integer)
-inputSmoothK                       = input(type=input.integer, defval=3, minval=1)
-inputSmoothD                       = input(type=input.integer, defval=3, minval=1)
 inputLengthRsi                     = input(type=input.integer, defval=14, minval=1)
 inputLengthStoch                   = input(type=input.integer, defval=14, minval=1)
+inputSmoothK                       = input(type=input.integer, defval=3, minval=1)
+inputSmoothD                       = input(type=input.integer, defval=3, minval=1)
 inputRsiSrc                        = input(title="RSI Source", defval=close)
 inputShowOnlyC                     = input(title="Show only current TF", type=input.bool, defval=true)
 inputShowC                         = input(title="Show current TF", type=input.bool, defval=true)
@@ -104,14 +105,14 @@ get_current_data(timeFrame) => security(syminfo.tickerid, timeFrame, inputRsiSrc
 
 get_stoch_rsi_cross(rsiSource) => 
     [rsi, k, d] = get_stoch_rsi(rsiSource)
-    lBearCross = crossunder(k, d) and d >= 75 and d <= 100
+    lBearCross = crossunder(k, d) and d >= 80
     // mBearCross  = crossunder(k, d) and d > 20 and d < 80
     // sBearCross = crossunder(k, d) and d >= 0 and d <= 20
-    sBearCross = crossunder(k, d) and d >= 20 and d < 75
-    lBullCross = crossover(k, d) and d >=0 and d < 20
+    sBearCross = crossunder(k, d) and d < 80
+    lBullCross = crossover(k, d) and d < 20
     // lBullCross = crossover(k, d) and d >=0 and d <= 20
     // mBullCross  = crossover(k, d) and d > 20 and d < 80
-    sBullCross  = crossover(k, d) and d >= 0 and d <= 100
+    sBullCross  = crossover(k, d) and d >= 20
     [rsi, k, d, lBearCross, sBearCross, lBullCross, sBullCross]
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -160,52 +161,62 @@ bearCrossMA = crossunder(ma1, ma2)
 // MACD Fast=8 Slow=9 Source=close Signal smoothing=9
 
 [rsiC, kC, dC, lBearCrossC, sBearCrossC, lBullCrossC, sBullCrossC] = get_stoch_rsi_cross(inputRsiSrc)
-srColor    = lBullCrossC or sBullCrossC ? (lBullCrossC ? color.new(colorLong, 0) : color.new(colorLong, 60)) : (lBearCrossC ? color.new(colorShort, 0) : color.new(colorShort, 60))
-plotshape(inputShowC and inputShowStochRsiCrosses and ((timeframe.isintraday and not(timeframe.multiplier == 240 or timeframe.multiplier == 60)) or inputShowOnlyC) and (lBearCrossC or sBearCrossC or lBullCrossC or sBullCrossC)? close : na, style=shape.circle, text="C", location=location.absolute, color=srColor)
+stochKC          = sma(stoch(close, high, low, inputLengthStoch), inputSmoothK)
+stochDC          = sma(stochKC, inputSmoothD)
+lBearStochCrossC = crossunder(stochKC, stochDC) and stochDC >= 80
+sBearStochCrossC = crossunder(stochKC, stochDC) and stochDC < 80
+lBullStochCrossC = crossover(stochKC, stochDC) and stochDC < 20
+sBullStochCrossC = crossover(stochKC, stochDC) and stochDC >= 20
+srColor          = lBullStochCrossC or sBullStochCrossC or lBullCrossC or sBullCrossC ? (lBullStochCrossC or lBullCrossC ? color.new(colorLong, 0) : color.new(colorLong, 60)) : (lBearStochCrossC or lBearCrossC ? color.new(colorShort, 0) : color.new(colorShort, 60))
+plotshape(inputShowC and inputShowStochRsiCrosses and ((timeframe.isintraday and not(timeframe.multiplier == 240 or timeframe.multiplier == 60)) or inputShowOnlyC) and (lBearStochCrossC or sBearStochCrossC or lBullStochCrossC or sBullStochCrossC or lBearCrossC or sBearCrossC or lBullCrossC or sBullCrossC)? close : na, style=shape.circle, text="C", location=location.absolute, color=srColor)
 
 rsi1h   = rsi(inputRsiSrc, inputLengthRsi)
 k1h     = security(syminfo.tickerid, "60", sma(stoch(rsi1h, rsi1h, rsi1h, inputLengthStoch), inputSmoothK))
 d1h     = security(syminfo.tickerid, "60", sma(k1h, inputSmoothD))
 close1h = security(syminfo.tickerid, "60", close)
-lBearCross1h = crossunder(k1h, d1h) and d1h >= 75 and d1h <= 100
-sBearCross1h = crossunder(k1h, d1h) and d1h >= 20 and d1h < 75
-lBullCross1h = crossover(k1h, d1h) and d1h >=0 and d1h < 20
-sBullCross1h = crossover(k1h, d1h) and d1h >= 0 and d1h <= 100
+lBearCross1h = crossunder(k1h, d1h) and d1h >= 80
+sBearCross1h = crossunder(k1h, d1h) and d1h < 80
+lBullCross1h = crossover(k1h, d1h) and d1h < 20
+sBullCross1h = crossover(k1h, d1h) and d1h >= 20
 sr1hColor    = lBullCross1h or sBullCross1h ? (lBullCross1h ? color.new(colorLong, 0) : color.new(colorLong, 60)) : (lBearCross1h ? color.new(colorShort, 0) : color.new(colorShort, 60))
 plotshape(inputShow1H and inputShowStochRsiCrosses and not inputShowOnlyC and  (lBullCross1h or sBullCross1h or lBearCross1h or sBearCross1h) ? close1h : na, style=shape.circle, text="1h", location=location.absolute, color=sr1hColor)
+// plotshape(inputShow1H and inputShowStochRsiCrosses and not inputShowOnlyC and  (lBearStochCross1h or sBearStochCross1h or lBullStochCross1h or sBullStochCross1h or lBullCross1h or sBullCross1h or lBearCross1h or sBearCross1h) ? close1h : na, style=shape.circle, text="1h", location=location.absolute, color=sr1hColor)
 
 rsi4h   = rsi(inputRsiSrc, inputLengthRsi)
 k4h     = security(syminfo.tickerid, "240", sma(stoch(rsi4h, rsi4h, rsi4h, inputLengthStoch), inputSmoothK))
 d4h     = security(syminfo.tickerid, "240", sma(k4h, inputSmoothD))
 close4h = security(syminfo.tickerid, "240", close)
-lBearCross4h = crossunder(k4h, d4h) and d4h >= 75 and d4h <= 100
-sBearCross4h = crossunder(k4h, d4h) and d4h >= 20 and d4h < 75
-lBullCross4h = crossover(k4h, d4h) and d4h >=0 and d4h < 20
-sBullCross4h = crossover(k4h, d4h) and d4h >= 0 and d4h <= 100
+lBearCross4h = crossunder(k4h, d4h) and d4h >= 80
+sBearCross4h = crossunder(k4h, d4h) and d4h < 80
+lBullCross4h = crossover(k4h, d4h) and d4h < 20
+sBullCross4h = crossover(k4h, d4h) and d4h >= 20
 sr4hColor    = lBullCross4h or sBullCross4h ? (lBullCross4h ? color.new(colorLong, 0) : color.new(colorLong, 60)) : (lBearCross4h ? color.new(colorShort, 0) : color.new(colorShort, 60))
 plotshape(inputShow4H and inputShowStochRsiCrosses and not inputShowOnlyC and timeframe.isintraday and (lBullCross4h or sBullCross4h or lBearCross4h or sBearCross4h) ? close4h : na, style=shape.circle, text="4h", location=location.absolute, color=sr4hColor)
+// plotshape(inputShow4H and inputShowStochRsiCrosses and not inputShowOnlyC and timeframe.isintraday and (lBearStochCross4h or sBearStochCross4h or lBullStochCross4h or sBullStochCross4h or lBullCross4h or sBullCross4h or lBearCross4h or sBearCross4h) ? close4h : na, style=shape.circle, text="4h", location=location.absolute, color=sr4hColor)
 
 rsiD   = rsi(inputRsiSrc, inputLengthRsi)
 kD     = security(syminfo.tickerid, "D", sma(stoch(rsiD, rsiD, rsiD, inputLengthStoch), inputSmoothK))
 dD     = security(syminfo.tickerid, "D", sma(kD, inputSmoothD))
 closeD = security(syminfo.tickerid, "D", close)
-lBearCrossD = crossunder(kD, dD) and dD >= 75 and dD <= 100
-sBearCrossD = crossunder(kD, dD) and dD >= 20 and dD < 75
-lBullCrossD = crossover(kD, dD) and dD >=0 and dD < 20
-sBullCrossD = crossover(kD, dD) and dD >= 0 and dD <= 100
+lBearCrossD = crossunder(kD, dD) and dD >= 80
+sBearCrossD = crossunder(kD, dD) and dD < 80
+lBullCrossD = crossover(kD, dD) and dD < 20
+sBullCrossD = crossover(kD, dD) and dD >= 20
 srDColor    = lBullCrossD or sBullCrossD ? (lBullCrossD ? color.new(colorLong, 0) : color.new(colorLong, 60)) : (lBearCrossD ? color.new(colorShort, 0) : color.new(colorShort, 60))
 plotshape(inputShow1D and inputShowStochRsiCrosses and not inputShowOnlyC and (lBullCrossD or sBullCrossD or lBearCrossD or sBearCrossD) ? closeD : na, style=shape.circle, text="D", location=location.absolute, color=srDColor)
+// plotshape(inputShow1D and inputShowStochRsiCrosses and not inputShowOnlyC and (lBearStochCrossD or sBearStochCrossD or lBullStochCrossD or sBullStochCrossD or lBullCrossD or sBullCrossD or lBearCrossD or sBearCrossD) ? closeD : na, style=shape.circle, text="D", location=location.absolute, color=srDColor)
 
 rsiW   = rsi(inputRsiSrc, inputLengthRsi)
 kW     = security(syminfo.tickerid, "W", sma(stoch(rsiW, rsiW, rsiW, inputLengthStoch), inputSmoothK))
 dW     = security(syminfo.tickerid, "W", sma(kW, inputSmoothD))
 closeW = security(syminfo.tickerid, "W", close)
-lBearCrossW = crossunder(kW, dW) and dW >= 75 and dW <= 100
-sBearCrossW = crossunder(kW, dW) and dW >= 20 and dW < 75
-lBullCrossW = crossover(kW, dW) and dW >=0 and dW < 20
-sBullCrossW = crossover(kW, dW) and dW >= 0 and dW <= 100
+lBearCrossW = crossunder(kW, dW) and dW >= 80
+sBearCrossW = crossunder(kW, dW) and dW < 80
+lBullCrossW = crossover(kW, dW) and dW < 20
+sBullCrossW = crossover(kW, dW) and dW >= 20
 srWColor    = lBullCrossW or sBullCrossW ? (lBullCrossW ? color.new(colorLong, 0) : color.new(colorLong, 60)) : (lBearCrossW ? color.new(colorShort, 0) : color.new(colorShort, 60))
 plotshape(inputShow1W and inputShowStochRsiCrosses and not inputShowOnlyC and (lBullCrossW or sBullCrossW or lBearCrossW or sBearCrossW) ? closeW : na, style=shape.circle, text="W", location=location.absolute, color=srWColor)
+// plotshape(inputShow1W and inputShowStochRsiCrosses and not inputShowOnlyC and (lBearStochCrossW or sBearStochCrossW or lBullStochCrossW or sBullStochCrossW or lBullCrossW or sBullCrossW or lBearCrossW or sBearCrossW) ? closeW : na, style=shape.circle, text="W", location=location.absolute, color=srWColor)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Bollinger Bands
@@ -221,7 +232,7 @@ p2 = plot(inputShowBB ? lower : na, color=color.blue)
 fill(p1, p2)
 
 ////////////////////////////////////////////////////////////////////////////////
-// Custom alerts
+// Strategy
 
 // MACD Strategy template: 12 26 14 | BTCUSD daily = 31819
 // MACD Strategy template: 6 10 20 | BTCUSD daily = 25489
@@ -234,16 +245,18 @@ fill(p1, p2)
 // MACD Strategy template: 10 19 19 | LINKUSDT 1h = 3654
 
 
-stopLevel = strategy.position_avg_price * (1 - inputStopLoss)
+// stopLevel = strategy.position_avg_price * (1 - inputStopLoss)
 
-testPeriodStart = timestamp(2019, 6, 1, 0, 0)
+// testPeriodStart = timestamp(2019, 6, 1, 0, 0)
 
-if (inputEnableStrategy and time >= testPeriodStart)
-    strategy.entry('Long', strategy.long, when=bullCrossMA, stop=ma3)
-    // strategy.entry('Short', strategy.short, when=bearCrossMA)
-    strategy.close('Long', when=bearCrossMA)
-    // strategy.close('Short', when=bullCrossMA)
+// if (inputEnableStrategy and time >= testPeriodStart)
+//     strategy.entry('Long', strategy.long, when=bullCrossMA, stop=ma3)
+//     // strategy.entry('Short', strategy.short, when=bearCrossMA)
+//     strategy.close('Long', when=bearCrossMA)
+//     // strategy.close('Short', when=bullCrossMA)
 
+////////////////////////////////////////////////////////////////////////////////
+// Custom alerts
 
 alertcondition(lBearCross1h or lBearCrossC, title='Sell signal', message='Sell signal')
 alertcondition(lBullCross1h or lBullCrossC, title='Buy signal', message='Buy signal')

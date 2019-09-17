@@ -1,5 +1,5 @@
 //@version=3
-study(title="Styled Stochastic RSI", shorttitle="Styled Stoch RSI")
+study(title="Styled Stochastic RSI", shorttitle="Styled Stoch RSI", default_qty_type=strategy.percent_of_equity ,default_qty_value=100, initial_capital=2000)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Variables
@@ -94,3 +94,26 @@ plot(level6, style=line, show_last=1, color=white, trackprice=true, editable=fal
 plot(level7, style=line, show_last=1, color=white, trackprice=true, editable=false)
 plot(level8, style=line, show_last=1, color=white, trackprice=true, editable=false)
 
+////////////////////////////////////////////////////////////////////////////////
+// Custom alerts
+
+// MACD Strategy template: 12 26 14 | BTCUSD daily = 31819
+// MACD Strategy template: 6 10 20 | BTCUSD daily = 25489
+// MACD Strategy template: 1 6 31 | BTCUSD daily = 28189
+// Good MACD length to test: 14 - 23 -24    slow length : 7 - 10 / 15 - 17
+// MACD Strategy template: 5 6 9 | LINKUSDT 4H = 2055
+// MACD Strategy template: 5 6 3 | LINKUSDT 4H = 2050 D = 9600
+// MACD Strategy template: 5 6 12 | LINKUSDT D = 12590
+// MACD Strategy template: 11 26 19 | LINKUSDT 1h = 3834
+// MACD Strategy template: 10 19 19 | LINKUSDT 1h = 3654
+
+
+stopLevel = strategy.position_avg_price * (1 - inputStopLoss)
+
+testPeriodStart = timestamp(2019, 6, 1, 0, 0)
+
+if (inputEnableStrategy and time >= testPeriodStart)
+    strategy.entry('Long', strategy.long, when=bullCrossMA, stop=ma3)
+    // strategy.entry('Short', strategy.short, when=bearCrossMA)
+    strategy.close('Long', when=bearCrossMA)
+    // strategy.close('Short', when=bullCrossMA)

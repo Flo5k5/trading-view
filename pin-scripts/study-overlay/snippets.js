@@ -584,3 +584,57 @@ plot(inputShowSupportResistance ? level8 : na, style=plot.style_line, show_last=
 // Get symbol for BTC dominance / shorts / longs, total cap 1 and 2, 
 // If current === btc, print other infos
 
+
+
+// bullCrossMA = crossover(ma1, ma2)
+// bearCrossMA = crossunder(ma1, ma2)
+// bullCrossMA = close > ma1 and close[1] < ma1[1]
+// bearCrossMA = (close < ma2 and close[1] > ma2[1]) or (close[1] > ma3[1] and close < ma3) or (close[1] > ma4[1] and close < ma4)
+
+// plot(cross(ma1, ma2) ? close : na, style=style.cross, linewidth=3, color=color.fuchsia, transp=0, editable=false)
+// plot(crossunder(sma9, sma21) ? close : na, style=cross, linewidth=2, color=black, transp=0, editable=false)
+// plotshape(bullMa or bearMa ? close : na, style=shape.diamond, text="MA", location=location.absolute, color=bullMa ? colorLong : colorShort) 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Strategy
+// strategy(title="SMA Bundle", shorttitle="SMA", overlay=true, default_qty_type=strategy.percent_of_equity ,default_qty_value=100, initial_capital=2000)
+
+// inputShowOhlcHtfMonthlyClose       = input(title="Monthly close", type=input.bool, defval=true)
+
+// dummy80                            = input(title="//////////////////////////////", type=input.bool, defval=false)
+// inputEnableStrategy                = input(title="Strategy", type=input.bool, defval=false)
+// dummy90                            = input(title=" ", type=input.bool, defval=false)
+// inputStopLoss                      = input(2.0, title='Stop Loss %', type=input.float)/100
+
+
+// MACD Strategy template: 12 26 14 | BTCUSD daily = 31819
+// MACD Strategy template: 6 10 20 | BTCUSD daily = 25489
+// MACD Strategy template: 1 6 31 | BTCUSD daily = 28189
+// Good MACD length to test: 14 - 23 -24    slow length : 7 - 10 / 15 - 17
+// MACD Strategy template: 5 6 9 | LINKUSDT 4H = 2055
+// MACD Strategy template: 5 6 3 | LINKUSDT 4H = 2050 D = 9600
+// MACD Strategy template: 5 6 12 | LINKUSDT D = 12590
+// MACD Strategy template: 11 26 19 | LINKUSDT 1h = 3834
+// MACD Strategy template: 10 19 19 | LINKUSDT 1h = 3654
+
+
+// stopLevel = strategy.position_avg_price * (1 - inputStopLoss)
+
+// testPeriodStart = timestamp(2019, 6, 1, 0, 0)
+
+// if (inputEnableStrategy and time >= testPeriodStart)
+//     strategy.entry('Long', strategy.long, when=bullCrossMA, stop=ma3)
+//     // strategy.entry('Short', strategy.short, when=bearCrossMA)
+//     strategy.close('Long', when=bearCrossMA)
+//     // strategy.close('Short', when=bullCrossMA)
+
+////////////////////////////////////////////////////////////////////////////////
+// Stoch RSI 
+
+// On daily, settings to ameliorate: K=5 D=4 RSI=19 Stoch=21 Source=Close
+
+// Daily - Stoch Rsi(K=5 D=4 RSI=19 Stoch=21 Source=Close) - Buy below 20 - Sell above 80 - LOKI/BTC 1D @ 25/07/2018 to 18/03/2019
+//         RSI(7) - Buy below 30 - sell above 70 and RSI closing below previous close 
+
+// MACD Fast=8 Slow=9 Source=close Signal smoothing=9

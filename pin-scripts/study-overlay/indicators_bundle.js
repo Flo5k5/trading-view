@@ -2,65 +2,6 @@
 study(title="Indicators Bundle", shorttitle="Indicators Bundle", overlay=true)
 
 ////////////////////////////////////////////////////////////////////////////////
-// Functions
-
-getMa(src, length, maType, almaOffset, almaSigma) => 
-    if maType == "RMA" 
-        rma(src, length)
-    else
-        if maType == "SMA" 
-            sma(src, length)
-        else
-            if maType == "EMA"
-                ema(src, length)
-            else
-                if maType == "WMA" 
-                    wma(src, length)
-                else
-                    if maType == "VWMA"
-                        vwma(src, length)
-                    else
-                        if maType == "SMMA" 
-                            (na(src[1]) ? sma(src, length) : (src[1] * (length - 1) + src) / length)
-                        else
-                            if maType == "HullMA"
-                                (wma(2 * wma(src, length / 2) - wma(src, length), round(sqrt(length))))
-                            else 
-                                if maType == "LSMA" 
-                                    alma(src, length, almaOffset, almaSigma)
-                                else
-                                    if maType == "DEMA"
-                                        e1 = ema(src, length)
-                                        e2 = ema(e1, length)
-                                        2 * e1 - e2
-                                    else
-                                        if maType == "TEMA"
-                                            ema1 = ema(src, length)
-                                            ema2 = ema(ema1, length)
-                                            ema3 = ema(ema2, length)
-                                            3 * (ema1 - ema2) + ema3
-                                        else
-                                            src
-
-getStochRsi(rsiSource, rsiLength, lengthStoch, smoothK, smoothD) =>
-    rsi = rsi(rsiSource, rsiLength)
-    k   = sma(stoch(rsi, rsi, rsi, lengthStoch), smoothK)
-    d   = sma(k, smoothD)
-    [rsi, k, d]
-
-getStochRsiCross(rsiSource, rsiLength, lengthStoch, smoothK, smoothD) => 
-    [rsi, k, d] = getStochRsi(rsiSource, rsiLength, lengthStoch, smoothK, smoothD)
-    lBearCross = crossunder(k, d) and d >= 80
-    // mBearCross  = crossunder(k, d) and d > 20 and d < 80
-    // sBearCross = crossunder(k, d) and d >= 0 and d <= 20
-    sBearCross = crossunder(k, d) and d < 80
-    lBullCross = crossover(k, d) and d < 20
-    // lBullCross = crossover(k, d) and d >=0 and d <= 20
-    // mBullCross  = crossover(k, d) and d > 20 and d < 80
-    sBullCross  = crossover(k, d) and d >= 20
-    [rsi, k, d, lBearCross, sBearCross, lBullCross, sBullCross]
-
-////////////////////////////////////////////////////////////////////////////////
 // Variables
 
 lineWidth   = 1
@@ -103,6 +44,44 @@ inputSmaTransparency = input(title="MA transparency", type=input.integer, defval
 inputAlmaOffset      = input(title="ALMA Offset", defval=0.85, minval=1)
 inputAlmaSigma       = input(title="ALMA Sigma", defval=6, minval=0)
 
+getMa(src, length, maType, almaOffset, almaSigma) => 
+    if maType == "RMA" 
+        rma(src, length)
+    else
+        if maType == "SMA" 
+            sma(src, length)
+        else
+            if maType == "EMA"
+                ema(src, length)
+            else
+                if maType == "WMA" 
+                    wma(src, length)
+                else
+                    if maType == "VWMA"
+                        vwma(src, length)
+                    else
+                        if maType == "SMMA" 
+                            (na(src[1]) ? sma(src, length) : (src[1] * (length - 1) + src) / length)
+                        else
+                            if maType == "HullMA"
+                                (wma(2 * wma(src, length / 2) - wma(src, length), round(sqrt(length))))
+                            else 
+                                if maType == "LSMA" 
+                                    alma(src, length, almaOffset, almaSigma)
+                                else
+                                    if maType == "DEMA"
+                                        e1 = ema(src, length)
+                                        e2 = ema(e1, length)
+                                        2 * e1 - e2
+                                    else
+                                        if maType == "TEMA"
+                                            ema1 = ema(src, length)
+                                            ema2 = ema(ema1, length)
+                                            ema3 = ema(ema2, length)
+                                            3 * (ema1 - ema2) + ema3
+                                        else
+                                            src
+
 ma1 = getMa(close, inputMa1, inputSmoothingMa1, inputAlmaOffset, inputAlmaSigma)
 ma2 = getMa(close, inputMa2, inputSmoothingMa2, inputAlmaOffset, inputAlmaSigma)
 ma3 = getMa(close, inputMa3, inputSmoothingMa3, inputAlmaOffset, inputAlmaSigma)
@@ -134,6 +113,24 @@ inputShow1H              = input(title="Show 1h", type=input.bool, defval=true)
 inputShow4H              = input(title="Show 4h", type=input.bool, defval=true)
 inputShow1D              = input(title="Show D", type=input.bool, defval=true)
 inputShow1W              = input(title="Show W", type=input.bool, defval=true)
+
+getStochRsi(rsiSource, rsiLength, lengthStoch, smoothK, smoothD) =>
+    rsi = rsi(rsiSource, rsiLength)
+    k   = sma(stoch(rsi, rsi, rsi, lengthStoch), smoothK)
+    d   = sma(k, smoothD)
+    [rsi, k, d]
+
+getStochRsiCross(rsiSource, rsiLength, lengthStoch, smoothK, smoothD) => 
+    [rsi, k, d] = getStochRsi(rsiSource, rsiLength, lengthStoch, smoothK, smoothD)
+    lBearCross = crossunder(k, d) and d >= 80
+    // mBearCross  = crossunder(k, d) and d > 20 and d < 80
+    // sBearCross = crossunder(k, d) and d >= 0 and d <= 20
+    sBearCross = crossunder(k, d) and d < 80
+    lBullCross = crossover(k, d) and d < 20
+    // lBullCross = crossover(k, d) and d >=0 and d <= 20
+    // mBullCross  = crossover(k, d) and d > 20 and d < 80
+    sBullCross  = crossover(k, d) and d >= 20
+    [rsi, k, d, lBearCross, sBearCross, lBullCross, sBullCross]
 
 [rsiC, kC, dC, lBearCrossC, sBearCrossC, lBullCrossC, sBullCrossC] = getStochRsiCross(inputRsiSrc, inputLengthRsi, inputLengthStoch, inputSmoothK, inputSmoothD)
 stochKC          = sma(stoch(close, high, low, inputLengthStoch), inputSmoothK)
@@ -194,7 +191,7 @@ plotshape(inputShow1W and inputShowStochRsiCrosses and not inputShowOnlyC and (l
 // plotshape(inputShow1W and inputShowStochRsiCrosses and not inputShowOnlyC and (lBearStochCrossW or sBearStochCrossW or lBullStochCrossW or sBullStochCrossW or lBullCrossW or sBullCrossW or lBearCrossW or sBearCrossW) ? closeW : na, style=shape.circle, text="W", location=location.absolute, color=srWColor)
 
 ////////////////////////////////////////////////////////////////////////////////
-// Bollinger Bands
+// Bollinger Bands 
 
 dummy2           = input(title="//////////////////////////////", type=input.bool, defval=false)
 inputShowBB      = input(title="Bollinger Bands", type=input.bool, defval=false)
@@ -262,11 +259,11 @@ bgcolor(color=backgroundColorBar, title="Background color (stoch RSI K and D dif
 ////////////////////////////////////////////////////////////////////////////////
 // Support / Resistance
 //
-// https://backtest-rookies.com/2018/10/05/tradingview-support-and-resistance-indicator/
+// Backtest-rookies: tradingview-support-and-resistance-indicator
 //
 
 dummy5                             = input(title="//////////////////////////////", type=input.bool, defval=false)
-inputShowSupportResistance         = input(title="Support / resistance", type=input.bool, defval=true)
+inputShowSupportResistance         = input(title="Support / resistance", type=input.bool, defval=false)
 dummy51                            = input(title=" ", type=input.bool, defval=false)
 inputSupportResistanceTransparency = input(title="Support / resistance transparency", type=input.integer, defval=0, minval=0, maxval=100)
 
@@ -301,7 +298,7 @@ plot(inputShowSupportResistance ? level8 : na, style=plot.style_line, show_last=
 ////////////////////////////////////////////////////////////////////////////////
 // Open High Low Close HTF
 //
-// https://www.tradingview.com/script/F8yZU30q-Open-High-Low-HTF/
+// Tradingview script/F8yZU30q-Open-High-Low-HTF
 // 
 
 dummy6                       = input(title="//////////////////////////////", type=input.bool, defval=false)
@@ -353,6 +350,29 @@ plot(inputShowOhlcHtf and inputShowOhlcHtfMonthlyHigh and highPriceM and not bar
 plot(inputShowOhlcHtf and inputShowOhlcHtfMonthlyLow and lowPriceM and not barstate.isrealtime  ? lowPriceM :  na, title="Monthly Low",  style=plot.style_circles, linewidth=3, color=colorRed)
 plot(inputShowOhlcHtf and inputShowOhlcHtfMonthlyClose and closePriceM and not barstate.isrealtime  ? closePriceM :  na, title="Monthly Close",  style=plot.style_circles, linewidth=3, color=colorRed)
 
+// var line r1Line = na
+// var line pLine = na
+// var line s1Line = na
+
+// if pLevel[1] != pLevel
+//     line.set_x2(r1Line, bar_index)
+//     line.set_x2(pLine, bar_index)
+//     line.set_x2(s1Line, bar_index)
+//     line.set_extend(r1Line, extend.none)
+//     line.set_extend(pLine, extend.none)
+//     line.set_extend(s1Line, extend.none)
+//     r1Line := line.new(bar_index, r1Level, bar_index, r1Level, extend=extend.right)
+//     pLine := line.new(bar_index, pLevel, bar_index, pLevel, width=3, extend=extend.right)
+//     s1Line := line.new(bar_index, s1Level, bar_index, s1Level, extend=extend.right)
+//     label.new(bar_index, r1Level, "R1", style=label.style_none)
+//     label.new(bar_index, pLevel, "P", style=label.style_none)
+//     label.new(bar_index, s1Level, "S1", style=label.style_none)
+
+// if not na(pLine) and line.get_x2(pLine) != bar_index
+//     line.set_x2(r1Line, bar_index)
+//     line.set_x2(pLine, bar_index)
+//     line.set_x2(s1Line, bar_index)
+
 ////////////////////////////////////////////////////////////////////////////////
 // Alt szn
 // [TODO]: add a check to exclude non crypto assets from this feature
@@ -371,50 +391,174 @@ plotchar(inputDisplayAltSzn and crossunder(closeBtcDom, smaBtcDom), title="BTC d
 plotchar(inputDisplayAltSzn and crossover(closeBtcDom, smaBtcDom), title="BTC Dominance crossing over MA", char='❄', transp=0, location=location.abovebar, color=color.white, editable=true, size=size.auto)
 
 ////////////////////////////////////////////////////////////////////////////////
-// Auto-fibo
-// https://www.tradingview.com/script/e9AvttKQ-Auto-Fib/
+// Auto-fibo / log
+// Tradingview script/e9AvttKQ-Auto-Fib
 //
 
 dummy8              = input(title="//////////////////////////////", type=input.bool, defval=false)
-inputDisplayAutoFib = input(title="Auto fibonacci levels", type=input.bool, defval=false)
+inputDisplayAutoFib = input(title="Auto fibonacci levels", type=input.bool, defval=true)
 dummy81             = input(title=" ", type=input.bool, defval=false)
-inputLookback       = input(title="Lookback period", type=input.integer, defval=65, minval=1)
+inputLookback       = input(title="Lookback period", type=input.integer, defval=200, minval=1)
 inputFiboLineWidth  = input(title="Line width", type=input.integer, defval=2, minval=1, maxval=5)
+inputFiboIsLog      = input(title="Logarithmic", type=input.bool, defval=true)
 
-colorFib01   = #808080
-colorFib236  = #cc2828
-colorFib382  = #95cc28
-colorFib500  = #28cc28
-colorFib618  = #28cc95
-colorFib786  = #2895cc
-colorFib1618 = #2828cc
-colorFib2618 = #cc2828
-colorFib3618 = #9528cc
+biggest(series) =>
+    max = 0.0
+    max := nz(max[1], series)
+    if series > max
+        max := series
+    max
 
-recentHighest  = highest(high, inputLookback)
-recentLowest   = lowest(low, inputLookback)
-offsetHighest  = highestbars(high, inputLookback)
-offsetLowest   = lowestbars(low, inputLookback)
-range          = recentHighest - recentLowest
-isFiboReversed = offsetHighest < offsetLowest
+smallest(series) =>
+    min = 0.0
+    min := nz(min[1], series)
+    if series < min
+        min := series
+    min
 
-fib236  = isFiboReversed ? recentLowest + range * (0.236) : recentHighest - range * (0.236)
-fib382  = isFiboReversed ? recentLowest + range * (0.382) : recentHighest - range * (0.382)
-fib500  = isFiboReversed ? recentLowest + range * (0.5) : recentHighest - range * (0.5)
-fib618  = isFiboReversed ? recentLowest + range * (0.618) : recentHighest - range * (0.618)
-fib786  = isFiboReversed ? recentLowest + range * (0.786) : recentHighest - range * (0.786)
-fib1618 = isFiboReversed ? recentLowest + range * (1.618) : recentHighest - range * (1.618)
-fib2618 = isFiboReversed ? recentLowest + range * (2.618) : recentHighest - range * (2.618)
-fib3618 = isFiboReversed ? recentLowest + range * (3.618) : recentHighest - range * (3.618)
+getFiboLevels(nHigh, nLow, isFiboReversed, isLog) =>
+    if not na(nHigh) and not na(nLow)
+        currentHigh    = isLog ? log(nHigh) : nHigh
+        currentLow     = isLog ? log(nLow) : nLow
+        range          = currentHigh - currentLow
+        temp0          = isFiboReversed ? currentLow : currentHigh
+        f0             = isLog ? exp(temp0) : temp0
+        temp236        = isFiboReversed ? currentLow + range * 0.236 : currentHigh - range * 0.236
+        f236           = isLog ? exp(temp236) : temp236
+        temp382        = isFiboReversed ? currentLow + range * 0.382 : currentHigh - range * 0.382
+        f382           = isLog ? exp(temp382) : temp382
+        temp500        = isFiboReversed ? currentLow + range * 0.5 : currentHigh - range * 0.5
+        f500           = isLog ? exp(temp500) : temp500
+        temp618        = isFiboReversed ? currentLow + range * 0.618 : currentHigh - range * 0.618
+        f618           = isLog ? exp(temp618) : temp618
+        temp786        = isFiboReversed ? currentLow + range * 0.786 : currentHigh - range * 0.786
+        f786           = isLog ? exp(temp786) : temp786
+        temp1          = isFiboReversed ? currentHigh : currentLow
+        f1             = isLog ? exp(temp1) : temp1
+        temp1618       = isFiboReversed ? currentLow + range * 1.618 : currentHigh - range * 1.618
+        f1618          = isLog ? exp(temp1618) : temp1618
+        temp2618       = isFiboReversed ? currentLow + range * 2.618 : currentHigh - range * 2.618
+        f2618          = isLog ? exp(temp2618) : temp2618
+        temp3618       = isFiboReversed ? currentLow + range * 3.618 : currentHigh - range * 3.618
+        f3618          = isLog ? exp(temp3618) : temp3618
+        [f0, f236, f382, f500, f618, f786, f1, f1618, f2618, f3618]
 
-plot(inputDisplayAutoFib ? recentLowest : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib01, linewidth=inputFiboLineWidth, title="1")
-plot(inputDisplayAutoFib ? recentHighest : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib01, linewidth=inputFiboLineWidth, title="0")
+colorFib01    = #808080
+colorFib236   = #cc2828
+colorFib382   = #95cc28
+colorFib500   = #28cc28
+colorFib618   = #28cc95
+colorFib786   = #2895cc
+colorFib1618  = #2828cc
+colorFib2618  = #cc2828
+colorFib3618  = #9528cc
+recentHighest = highest(high, inputLookback)
+recentLowest  = lowest(low, inputLookback)
+isFiboReversed = highestbars(high, inputLookback) < lowestbars(low, inputLookback)
 
-plot(inputDisplayAutoFib ? fib236 : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib236, linewidth=inputFiboLineWidth, title="0.236")
-plot(inputDisplayAutoFib ? fib382 : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib382, linewidth=inputFiboLineWidth, title="0.382")
-plot(inputDisplayAutoFib ? fib500 : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib500, linewidth=inputFiboLineWidth, title="0.5")
-plot(inputDisplayAutoFib ? fib618 : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib618, linewidth=inputFiboLineWidth, title="0.618")
-plot(inputDisplayAutoFib ? fib786 : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib786, linewidth=inputFiboLineWidth, title="0.786")
-plot(inputDisplayAutoFib ? fib1618 : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib1618, linewidth=inputFiboLineWidth, title="1.618")
-plot(inputDisplayAutoFib ? fib2618 : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib2618, linewidth=inputFiboLineWidth, title="2.618")
-plot(inputDisplayAutoFib ? fib3618 : na, show_last=1, trackprice=true, transp=0, style=plot.style_line, color=colorFib3618, linewidth=inputFiboLineWidth, title="3.618")
+[fib0, fib236, fib382, fib500, fib618, fib786, fib1, fib1618, fib2618, fib3618] = getFiboLevels(recentHighest, recentLowest, isFiboReversed, inputFiboIsLog)
+
+var line fib0Line      = na
+var line fib236Line    = na
+var line fib382Line    = na
+var line fib500Line    = na
+var line fib618Line    = na
+var line fib786Line    = na
+var line fib1Line      = na
+var line fib1618Line   = na
+var line fib2618Line   = na
+var line fib3618Line   = na
+
+var label fib0Label    = na
+var label fib236Label  = na
+var label fib382Label  = na
+var label fib500Label  = na
+var label fib618Label  = na
+var label fib786Label  = na
+var label fib1Label    = na
+var label fib1618Label = na
+var label fib2618Label = na
+var label fib3618Label = na
+
+if fib0[1] != fib0 or fib1[1] != fib1
+    // line.set_x2(fib0Line, bar_index)
+    // line.set_extend(fib0Line, extend.none)
+    line.delete(fib0Line)
+    label.delete(fib0Label)
+    fib0Line  := line.new(bar_index, fib0, bar_index, fib0, extend=extend.right, color=colorFib01, width=2)
+    fib0Label := label.new(bar_index, fib0, "0", style=label.style_none, textcolor=colorFib01)
+
+    // line.set_x2(fib236Line, bar_index)
+    // line.set_extend(fib236Line, extend.none)
+    line.delete(fib236Line)
+    label.delete(fib236Label)
+    fib236Line  := line.new(bar_index, fib236, bar_index, fib236, extend=extend.right, color=colorFib236, width=2)
+    fib236Label := label.new(bar_index, fib236, "0.236", style=label.style_none, textcolor=colorFib236)
+
+    // line.set_x2(fib382Line, bar_index)
+    // line.set_extend(fib382Line, extend.none)
+    line.delete(fib382Line)
+    label.delete(fib382Label)
+    fib382Line  := line.new(bar_index, fib382, bar_index, fib382, extend=extend.right, color=colorFib382, width=2)
+    fib382Label := label.new(bar_index, fib382, "0.382", style=label.style_none, textcolor=colorFib382)
+
+    // line.set_x2(fib500Line, bar_index)
+    // line.set_extend(fib500Line, extend.none)
+    line.delete(fib500Line)
+    label.delete(fib500Label)
+    fib500Line  := line.new(bar_index, fib500, bar_index, fib500, extend=extend.right, color=colorFib500, width=2)
+    fib500Label := label.new(bar_index, fib500, "0.5", style=label.style_none, textcolor=colorFib500)
+
+    // line.set_x2(fib618Line, bar_index)
+    // line.set_extend(fib618Line, extend.none)
+    line.delete(fib618Line)
+    label.delete(fib618Label)
+    fib618Line  := line.new(bar_index, fib618, bar_index, fib618, extend=extend.right, color=colorFib618, width=2)
+    fib618Label := label.new(bar_index, fib618, "0.618", style=label.style_none, textcolor=colorFib618)
+
+    // line.set_x2(fib786Line, bar_index)
+    // line.set_extend(fib786Line, extend.none)
+    line.delete(fib786Line)
+    label.delete(fib786Label)
+    fib786Line  := line.new(bar_index, fib786, bar_index, fib786, extend=extend.right, color=colorFib786, width=2)
+    fib786Label := label.new(bar_index, fib786, "0.786", style=label.style_none, textcolor=colorFib786)
+
+    // line.set_x2(fib1Line, bar_index)
+    // line.set_extend(fib1Line, extend.none)
+    line.delete(fib1Line)
+    label.delete(fib1Label)
+    fib1Line  := line.new(bar_index, fib1, bar_index, fib1, extend=extend.right, color=colorFib01, width=2)
+    fib1Label := label.new(bar_index, fib1, "1", style=label.style_none, textcolor=colorFib01)
+
+    // line.set_x2(fib1618Line, bar_index)
+    // line.set_extend(fib1618Line, extend.none)
+    line.delete(fib1618Line)
+    label.delete(fib1618Label)
+    fib1618Line  := line.new(bar_index, fib1618, bar_index, fib1618, extend=extend.right, color=colorFib1618, width=2)
+    fib1618Label := label.new(bar_index, fib1618, "1.618", style=label.style_none, textcolor=colorFib1618)
+
+    // line.set_x2(fib2618Line, bar_index)
+    // line.set_extend(fib2618Line, extend.none)
+    line.delete(fib2618Line)
+    label.delete(fib2618Label)
+    fib2618Line  := line.new(bar_index, fib2618, bar_index, fib2618, extend=extend.right, color=colorFib2618, width=2)
+    fib2618Label := label.new(bar_index, fib2618, "2.618", style=label.style_none, textcolor=colorFib2618)
+
+    // line.set_x2(fib3618Line, bar_index)
+    // line.set_extend(fib3618Line, extend.none)
+    line.delete(fib3618Line)
+    label.delete(fib3618Label)
+    fib3618Line  := line.new(bar_index, fib3618, bar_index, fib3618, extend=extend.right, color=colorFib3618, width=2)
+    fib3618Label := label.new(bar_index, fib3618, "3.618", style=label.style_none, textcolor=colorFib3618)
+
+if not na(fib0Line) and line.get_x2(fib0Line) != bar_index
+    line.set_x2(fib0Line, bar_index)
+    line.set_x2(fib236Line, bar_index)
+    line.set_x2(fib382Line, bar_index)
+    line.set_x2(fib500Line, bar_index)
+    line.set_x2(fib618Line, bar_index)
+    line.set_x2(fib786Line, bar_index)
+    line.set_x2(fib1Line, bar_index)
+    line.set_x2(fib1618Line, bar_index)
+    line.set_x2(fib2618Line, bar_index)
+    line.set_x2(fib3618Line, bar_index)

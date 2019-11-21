@@ -638,3 +638,18 @@ plot(inputShowSupportResistance ? level8 : na, style=plot.style_line, show_last=
 //         RSI(7) - Buy below 30 - sell above 70 and RSI closing below previous close 
 
 // MACD Fast=8 Slow=9 Source=close Signal smoothing=9
+
+
+biggest(series) =>
+    max = 0.0
+    max := nz(max[1], series)
+    if series > max
+        max := series
+    max
+
+smallest(series) =>
+    min = 0.0
+    min := nz(min[1], series)
+    if series < min
+        min := series
+    min

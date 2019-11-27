@@ -1,3 +1,6 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © flo5k5
+
 //@version=4
 study(title='Indicators Bundle', shorttitle='Indicators Bundle', overlay=true)
 
@@ -21,7 +24,7 @@ colorShort  = #EC03EA
 dummy8              = input(title='//////////////////////////////', type=input.bool, defval=false)
 inputDisplayAutoFib = input(title='Auto fibonacci levels', type=input.bool, defval=true)
 dummy81             = input(title=' ', type=input.bool, defval=false)
-inputLookback       = input(title='Lookback period', type=input.integer, defval=200, minval=1)
+inputLookback       = input(title='Lookback period', type=input.integer, defval=350, minval=1)
 inputFiboIsLog      = input(title='Logarithmic', type=input.bool, defval=true)
 dummy82             = input(title=' ', type=input.bool, defval=false)
 inputLineWidthFib   = input(title='Line width', type=input.integer, defval=2, minval=1, maxval=5)
@@ -428,13 +431,13 @@ inputShowOhlcHtfDailyLow     = input(title='Daily low', type=input.bool, defval=
 inputShowOhlcHtfDailyClose   = input(title='Daily close', type=input.bool, defval=false)
 inputLineWidthOhlcDaily      = input(title='Line width', type=input.integer, defval=1, minval=1, maxval=5)
 dummy63                      = input(title=' ', type=input.bool, defval=false)
-inputShowOhlcHtfWeeklyOpen   = input(title='Weekly open', type=input.bool, defval=false)
+inputShowOhlcHtfWeeklyOpen   = input(title='Weekly open', type=input.bool, defval=true)
 inputShowOhlcHtfWeeklyHigh   = input(title='Weekly high', type=input.bool, defval=true)
 inputShowOhlcHtfWeeklyLow    = input(title='Weekly low', type=input.bool, defval=true)
 inputShowOhlcHtfWeeklyClose  = input(title='Weekly close', type=input.bool, defval=true)
 inputLineWidthOhlcWeekly     = input(title='Line width', type=input.integer, defval=2, minval=1, maxval=5)
 dummy64                      = input(title=' ', type=input.bool, defval=false)
-inputShowOhlcHtfMonthlyOpen  = input(title='Monthly open', type=input.bool, defval=false)
+inputShowOhlcHtfMonthlyOpen  = input(title='Monthly open', type=input.bool, defval=true)
 inputShowOhlcHtfMonthlyHigh  = input(title='Monthly high', type=input.bool, defval=true)
 inputShowOhlcHtfMonthlyLow   = input(title='Monthly low', type=input.bool, defval=true)
 inputShowOhlcHtfMonthlyClose = input(title='Monthly close', type=input.bool, defval=true)
@@ -442,7 +445,7 @@ inputLineWidthOhlcMonthly    = input(title='Line width', type=input.integer, def
 dummy65                      = input(title=' ', type=input.bool, defval=false)
 
 
-inputOhlcLabelColor          = #5d606b
+inputOhlcLabelColor          = #d1d4dc
 
 ////// Daily Open
 

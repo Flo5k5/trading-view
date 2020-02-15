@@ -24,12 +24,12 @@ colorShort  = #EC03EA
 dummy8              = input(title='//////////////////////////////', type=input.bool, defval=false)
 inputDisplayAutoFib = input(title='Auto fibonacci levels', type=input.bool, defval=true)
 dummy81             = input(title=' ', type=input.bool, defval=false)
-inputLookback       = input(title='Lookback period', type=input.integer, defval=350, minval=1)
+inputLookback       = input(title='Lookback period', type=input.integer, defval=360, minval=1)
 inputFiboIsLog      = input(title='Logarithmic', type=input.bool, defval=true)
 dummy82             = input(title=' ', type=input.bool, defval=false)
 inputLineWidthFib   = input(title='Line width', type=input.integer, defval=2, minval=1, maxval=5)
 
-inputColorFib01     = #d1d4dc
+inputColorFib01     = #3d3d3d
 inputColorFib236    = #cc2828
 inputColorFib382    = #95cc28
 inputColorFib500    = #28cc28
@@ -118,18 +118,18 @@ dummy0               = input(title='//////////////////////////////', type=input.
 inputShowSmas        = input(title='MAs', type=input.bool, defval=true)
 dummy01              = input(title=' ', type=input.bool, defval=false)
 inputMa1             = input(title='MA 1', type=input.integer, defval=9, minval=0)
-inputSmoothingMa1    = input(title='Smoothing MA1', defval='SMA', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
-inputShowMa1         = input(title='Show MA 1', type=input.bool, defval=true)
+inputSmoothingMa1    = input(title='Smoothing MA1', defval='EMA', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
+inputShowMa1         = input(title='Show MA 1', type=input.bool, defval=false)
 dummy02              = input(title=' ', type=input.bool, defval=false)
 inputMa2             = input(title='MA 2', type=input.integer, defval=21, minval=0)
-inputSmoothingMa2    = input(title='Smoothing MA2', defval='SMA', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
-inputShowMa2         = input(title='Show MA 2', type=input.bool, defval=true)
+inputSmoothingMa2    = input(title='Smoothing MA2', defval='EMA', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
+inputShowMa2         = input(title='Show MA 2', type=input.bool, defval=false)
 dummy03              = input(title=' ', type=input.bool, defval=false)
-inputMa3             = input(title='MA 3', type=input.integer, defval=50, minval=0)
+inputMa3             = input(title='MA 3', type=input.integer, defval=20, minval=0)
 inputSmoothingMa3    = input(title='Smoothing MA3', defval='SMA', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
 inputShowMa3         = input(title='Show MA 3', type=input.bool, defval=true)
 dummy04              = input(title=' ', type=input.bool, defval=false)
-inputMa4             = input(title='MA 4', type=input.integer, defval=100, minval=0)
+inputMa4             = input(title='MA 4', type=input.integer, defval=50, minval=0)
 inputSmoothingMa4    = input(title='Smoothing MA4', defval='SMA', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
 inputShowMa4         = input(title='Show MA 4', type=input.bool, defval=true)
 dummy05              = input(title=' ', type=input.bool, defval=false)
@@ -403,7 +403,7 @@ plot(inputShowSupportResistance ? level8 : na, style=plot.style_line, show_last=
 // [TODO]: add smoothing choice for MA
 
 dummy7             = input(title='//////////////////////////////', type=input.bool, defval=false)
-inputDisplayAltSzn = input(title='Alt dominance SMA cross', type=input.bool, defval=true)
+inputDisplayAltSzn = input(title='Alt dominance SMA cross', type=input.bool, defval=false)
 dummy71            = input(title=' ', type=input.bool, defval=false)
 inputMaAltSzn      = input(title='SMA', type=input.integer, defval=9, minval=1)
 inputSmoothing     = input(title='Smoothing', defval='SMA', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
@@ -426,22 +426,34 @@ dummy61                      = input(title=' ', type=input.bool, defval=false)
 inputShowOhlcLabels          = input(title='Show labels', type=input.bool, defval=false)
 dummy62                      = input(title=' ', type=input.bool, defval=false)
 inputShowOhlcHtfDailyOpen    = input(title='Daily open', type=input.bool, defval=false)
+inputExtendDaylyOpen         = input(title='Extend DO', type=input.bool, defval=false)
 inputShowOhlcHtfDailyHigh    = input(title='Daily high', type=input.bool, defval=false)
+inputExtendDaylyHigh         = input(title='Extend DH', type=input.bool, defval=false)
 inputShowOhlcHtfDailyLow     = input(title='Daily low', type=input.bool, defval=false)
+inputExtendDaylyLow          = input(title='Extend DL', type=input.bool, defval=false)
 inputShowOhlcHtfDailyClose   = input(title='Daily close', type=input.bool, defval=false)
+inputExtendDaylyClose        = input(title='Extend DC', type=input.bool, defval=false)
 inputLineWidthOhlcDaily      = input(title='Line width', type=input.integer, defval=1, minval=1, maxval=5)
 dummy63                      = input(title=' ', type=input.bool, defval=false)
-inputShowOhlcHtfWeeklyOpen   = input(title='Weekly open', type=input.bool, defval=true)
-inputShowOhlcHtfWeeklyHigh   = input(title='Weekly high', type=input.bool, defval=true)
-inputShowOhlcHtfWeeklyLow    = input(title='Weekly low', type=input.bool, defval=true)
-inputShowOhlcHtfWeeklyClose  = input(title='Weekly close', type=input.bool, defval=true)
-inputLineWidthOhlcWeekly     = input(title='Line width', type=input.integer, defval=2, minval=1, maxval=5)
+inputShowOhlcHtfWeeklyOpen   = input(title='Weekly open', type=input.bool, defval=false)
+inputExtendWeeklyOpen        = input(title='Extend WO', type=input.bool, defval=false)
+inputShowOhlcHtfWeeklyHigh   = input(title='Weekly high', type=input.bool, defval=false)
+inputExtendWeeklyHigh        = input(title='Extend WH', type=input.bool, defval=false)
+inputShowOhlcHtfWeeklyLow    = input(title='Weekly low', type=input.bool, defval=false)
+inputExtendWeeklyLow         = input(title='Extend WL', type=input.bool, defval=false)
+inputShowOhlcHtfWeeklyClose  = input(title='Weekly close', type=input.bool, defval=false)
+inputExtendWeeklyClose       = input(title='Extend WC', type=input.bool, defval=false)
+inputLineWidthOhlcWeekly     = input(title='Line width', type=input.integer, defval=1, minval=1, maxval=5)
 dummy64                      = input(title=' ', type=input.bool, defval=false)
-inputShowOhlcHtfMonthlyOpen  = input(title='Monthly open', type=input.bool, defval=true)
+inputShowOhlcHtfMonthlyOpen  = input(title='Monthly open', type=input.bool, defval=false)
+inputExtendMonthlyOpen       = input(title='Extend MO', type=input.bool, defval=false)
 inputShowOhlcHtfMonthlyHigh  = input(title='Monthly high', type=input.bool, defval=true)
+inputExtendMonthlyHigh       = input(title='Extend MH', type=input.bool, defval=false)
 inputShowOhlcHtfMonthlyLow   = input(title='Monthly low', type=input.bool, defval=true)
+inputExtendMonthlyLow        = input(title='Extend ML', type=input.bool, defval=false)
 inputShowOhlcHtfMonthlyClose = input(title='Monthly close', type=input.bool, defval=true)
-inputLineWidthOhlcMonthly    = input(title='Line width', type=input.integer, defval=3, minval=1, maxval=5)
+inputExtendMonthlyClose      = input(title='Extend MC', type=input.bool, defval=false)
+inputLineWidthOhlcMonthly    = input(title='Line width', type=input.integer, defval=2, minval=1, maxval=5)
 dummy65                      = input(title=' ', type=input.bool, defval=false)
 
 
@@ -454,9 +466,10 @@ isDisplayedDailyOpen  = inputShowOhlcHtf and inputShowOhlcHtfDailyOpen and openP
 var line dailyOpenLine  = na
 
 if isDisplayedDailyOpen and openPriceD[1] != openPriceD
-    line.set_x2(dailyOpenLine, bar_index)
-    line.set_extend(dailyOpenLine, extend.none)
-    dailyOpenLine := line.new(bar_index, openPriceD, bar_index, openPriceD, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcDaily)
+    if not inputExtendDaylyOpen
+        line.set_x2(dailyOpenLine, bar_index)
+        line.set_extend(dailyOpenLine, extend.none)
+    dailyOpenLine := line.new(bar_index, openPriceD, bar_index, openPriceD, extend=inputExtendDaylyOpen ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcDaily)
     if inputShowOhlcLabels
         label.new(bar_index, openPriceD, 'DO', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -470,9 +483,10 @@ isDisplayedDailyHigh  = inputShowOhlcHtf and inputShowOhlcHtfDailyHigh and highP
 var line dailyHighLine  = na
 
 if isDisplayedDailyHigh and highPriceD[1] != highPriceD
-    line.set_x2(dailyHighLine, bar_index)
-    line.set_extend(dailyHighLine, extend.none)
-    dailyHighLine := line.new(bar_index, highPriceD, bar_index, highPriceD, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcDaily)
+    if not inputExtendDaylyHigh
+        line.set_x2(dailyHighLine, bar_index)
+        line.set_extend(dailyHighLine, extend.none)
+    dailyHighLine := line.new(bar_index, highPriceD, bar_index, highPriceD, extend=inputExtendDaylyHigh ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcDaily)
     if inputShowOhlcLabels
         label.new(bar_index, highPriceD, 'DH', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -486,9 +500,10 @@ isDisplayedDailyLow  = inputShowOhlcHtf and inputShowOhlcHtfDailyLow and lowPric
 var line dailyLowLine  = na
 
 if isDisplayedDailyLow and lowPriceD[1] != lowPriceD
-    line.set_x2(dailyLowLine, bar_index)
-    line.set_extend(dailyLowLine, extend.none)
-    dailyLowLine := line.new(bar_index, lowPriceD, bar_index, lowPriceD, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcDaily)
+    if not inputExtendDaylyLow
+        line.set_x2(dailyLowLine, bar_index)
+        line.set_extend(dailyLowLine, extend.none)
+    dailyLowLine := line.new(bar_index, lowPriceD, bar_index, lowPriceD, extend=inputExtendDaylyLow ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcDaily)
     if inputShowOhlcLabels
         label.new(bar_index, lowPriceD, 'DL', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -502,9 +517,10 @@ isDisplayedDailyClose  = inputShowOhlcHtf and inputShowOhlcHtfDailyClose and clo
 var line dailyCloseLine  = na
 
 if isDisplayedDailyClose and closePriceD[1] != closePriceD
-    line.set_x2(dailyCloseLine, bar_index)
-    line.set_extend(dailyCloseLine, extend.none)
-    dailyCloseLine := line.new(bar_index, closePriceD, bar_index, closePriceD, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcDaily)
+    if not inputExtendDaylyClose
+        line.set_x2(dailyCloseLine, bar_index)
+        line.set_extend(dailyCloseLine, extend.none)
+    dailyCloseLine := line.new(bar_index, closePriceD, bar_index, closePriceD, extend=inputExtendDaylyClose ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcDaily)
     if inputShowOhlcLabels
         label.new(bar_index, closePriceD, 'DC', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -518,9 +534,10 @@ isDisplayedWeeklyOpen  = inputShowOhlcHtf and inputShowOhlcHtfWeeklyOpen and ope
 var line weeklyOpenLine  = na
 
 if isDisplayedWeeklyOpen and openPriceW[1] != openPriceW
-    line.set_x2(weeklyOpenLine, bar_index)
-    line.set_extend(weeklyOpenLine, extend.none)
-    weeklyOpenLine := line.new(bar_index, openPriceW, bar_index, openPriceW, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcWeekly)
+    if not inputExtendWeeklyOpen
+        line.set_x2(weeklyOpenLine, bar_index)
+        line.set_extend(weeklyOpenLine, extend.none)
+    weeklyOpenLine := line.new(bar_index, openPriceW, bar_index, openPriceW, extend=inputExtendWeeklyOpen ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcWeekly)
     if inputShowOhlcLabels
         label.new(bar_index, openPriceW, 'WO', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -534,9 +551,10 @@ isDisplayedWeeklyHigh  = inputShowOhlcHtf and inputShowOhlcHtfWeeklyHigh and hig
 var line weeklyHighLine  = na
 
 if isDisplayedWeeklyHigh and highPriceW[1] != highPriceW
-    line.set_x2(weeklyHighLine, bar_index)
-    line.set_extend(weeklyHighLine, extend.none)
-    weeklyHighLine := line.new(bar_index, highPriceW, bar_index, highPriceW, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcWeekly)
+    if not inputExtendWeeklyHigh
+        line.set_x2(weeklyHighLine, bar_index)
+        line.set_extend(weeklyHighLine, extend.none)
+    weeklyHighLine := line.new(bar_index, highPriceW, bar_index, highPriceW, extend=inputExtendWeeklyHigh ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcWeekly)
     if inputShowOhlcLabels
         label.new(bar_index, highPriceW, 'WH', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -550,9 +568,10 @@ isDisplayedWeeklyLow  = inputShowOhlcHtf and inputShowOhlcHtfWeeklyLow and lowPr
 var line weeklyLowLine  = na
 
 if isDisplayedWeeklyLow and lowPriceW[1] != lowPriceW
-    line.set_x2(weeklyLowLine, bar_index)
-    line.set_extend(weeklyLowLine, extend.none)
-    weeklyLowLine := line.new(bar_index, lowPriceW, bar_index, lowPriceW, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcWeekly)
+    if not inputExtendWeeklyLow
+        line.set_x2(weeklyLowLine, bar_index)
+        line.set_extend(weeklyLowLine, extend.none)
+    weeklyLowLine := line.new(bar_index, lowPriceW, bar_index, lowPriceW, extend=inputExtendWeeklyLow  ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcWeekly)
     if inputShowOhlcLabels
         label.new(bar_index, lowPriceW, 'WL', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -566,9 +585,10 @@ isDisplayedWeeklyClose  = inputShowOhlcHtf and inputShowOhlcHtfWeeklyClose and c
 var line weeklyCloseLine  = na
 
 if isDisplayedWeeklyClose and closePriceW[1] != closePriceW
-    line.set_x2(weeklyCloseLine, bar_index)
-    line.set_extend(weeklyCloseLine, extend.none)
-    weeklyCloseLine := line.new(bar_index, closePriceW, bar_index, closePriceW, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcWeekly)
+    if not inputExtendWeeklyClose
+        line.set_x2(weeklyCloseLine, bar_index)
+        line.set_extend(weeklyCloseLine, extend.none)
+    weeklyCloseLine := line.new(bar_index, closePriceW, bar_index, closePriceW, extend=inputExtendWeeklyClose ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcWeekly)
     if inputShowOhlcLabels
         label.new(bar_index, closePriceW, 'WC', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -582,9 +602,10 @@ isDisplayedMonthlyOpen  = inputShowOhlcHtf and inputShowOhlcHtfMonthlyOpen and o
 var line monthlyOpenLine  = na
 
 if isDisplayedMonthlyOpen and openPriceM[1] != openPriceM
-    line.set_x2(monthlyOpenLine, bar_index)
-    line.set_extend(monthlyOpenLine, extend.none)
-    monthlyOpenLine := line.new(bar_index, openPriceM, bar_index, openPriceM, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcMonthly)
+    if not inputExtendMonthlyOpen
+        line.set_x2(monthlyOpenLine, bar_index)
+        line.set_extend(monthlyOpenLine, extend.none)
+    monthlyOpenLine := line.new(bar_index, openPriceM, bar_index, openPriceM, extend= inputExtendMonthlyOpen ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcMonthly)
     if inputShowOhlcLabels
         label.new(bar_index, openPriceM, 'MO', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -598,9 +619,10 @@ isDisplayedMonthlyHigh  = inputShowOhlcHtf and inputShowOhlcHtfMonthlyHigh and h
 var line monthlyHighLine  = na
 
 if isDisplayedMonthlyHigh and highPriceM[1] != highPriceM
-    line.set_x2(monthlyHighLine, bar_index)
-    line.set_extend(monthlyHighLine, extend.none)
-    monthlyHighLine := line.new(bar_index, highPriceM, bar_index, highPriceM, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcMonthly)
+    if not inputExtendMonthlyHigh
+        line.set_x2(monthlyHighLine, bar_index)
+        line.set_extend(monthlyHighLine, extend.none)
+    monthlyHighLine := line.new(bar_index, highPriceM, bar_index, highPriceM, extend=inputExtendMonthlyHigh ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcMonthly)
     if inputShowOhlcLabels
         label.new(bar_index, highPriceM, 'MH', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -614,9 +636,10 @@ isDisplayedMonthlyLow  = inputShowOhlcHtf and inputShowOhlcHtfMonthlyLow and low
 var line monthlyLowLine  = na
 
 if isDisplayedMonthlyLow and lowPriceM[1] != lowPriceM
-    line.set_x2(monthlyLowLine, bar_index)
-    line.set_extend(monthlyLowLine, extend.none)
-    monthlyLowLine := line.new(bar_index, lowPriceM, bar_index, lowPriceM, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcMonthly)
+    if not inputExtendMonthlyLow
+        line.set_x2(monthlyLowLine, bar_index)
+        line.set_extend(monthlyLowLine, extend.none)
+    monthlyLowLine := line.new(bar_index, lowPriceM, bar_index, lowPriceM, extend=inputExtendMonthlyLow ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcMonthly)
     if inputShowOhlcLabels
         label.new(bar_index, lowPriceM, 'ML', style=label.style_none, textcolor=inputOhlcLabelColor)
 
@@ -630,9 +653,10 @@ isDisplayedMonthlyClose  = inputShowOhlcHtf and inputShowOhlcHtfMonthlyClose and
 var line monthlyCloseLine  = na
 
 if isDisplayedMonthlyClose and closePriceM[1] != closePriceM
-    line.set_x2(monthlyCloseLine, bar_index)
-    line.set_extend(monthlyCloseLine, extend.none)
-    monthlyCloseLine := line.new(bar_index, closePriceM, bar_index, closePriceM, extend=extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcMonthly)
+    if not inputExtendMonthlyClose
+        line.set_x2(monthlyCloseLine, bar_index)
+        line.set_extend(monthlyCloseLine, extend.none)
+    monthlyCloseLine := line.new(bar_index, closePriceM, bar_index, closePriceM, extend=inputExtendMonthlyClose ? extend.right : extend.none, color=inputOhlcLabelColor, width=inputLineWidthOhlcMonthly)
     if inputShowOhlcLabels
         label.new(bar_index, closePriceM, 'MC', style=label.style_none, textcolor=inputOhlcLabelColor)
 

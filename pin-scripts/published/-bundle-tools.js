@@ -2,7 +2,7 @@
 // © flo5k5
 
 //@version=4
-study(title='Indicators Bundle', shorttitle='Indicators Bundle', overlay=true)
+study(title='Bundle of tools - Flo5k5', shorttitle='Bundle of tools - 5k5', overlay=true)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Variables
@@ -334,13 +334,6 @@ sarValue = sar(inputStartSar, inputIncSar, inputMaxSar)
 plot(inputShowSar ? sarValue : na, style=plot.style_cross, linewidth=inputLineWidthSar, color=sarValue <= low ? colorGreen : colorRed )
 
 ////////////////////////////////////////////////////////////////////////////////
-// Custom alerts
-
-alertcondition(lBearCross1h or lBearCrossC, title='Sell signal', message='Sell signal')
-alertcondition(lBullCross1h or lBullCrossC, title='Buy signal', message='Buy signal')
-alertcondition(lBullCross1h or lBearCross1h or lBullCrossC or lBearCrossC, title='Buy or sell signal', message='Buy or sell signal')
-
-////////////////////////////////////////////////////////////////////////////////
 // Current candle background
 
 dummy4                  = input(title='//////////////////////////////', type=input.bool, defval=false)
@@ -405,11 +398,11 @@ plot(inputShowSupportResistance ? level8 : na, style=plot.style_line, show_last=
 dummy7             = input(title='//////////////////////////////', type=input.bool, defval=false)
 inputDisplayAltSzn = input(title='Alt dominance SMA cross', type=input.bool, defval=false)
 dummy71            = input(title=' ', type=input.bool, defval=false)
-inputMaAltSzn      = input(title='SMA', type=input.integer, defval=9, minval=1)
+inputMaAltSzn      = input(title='SMA', type=input.integer, defval=20, minval=1)
 inputSmoothing     = input(title='Smoothing', defval='SMA', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
 
 closeBtcDom        = security('CRYPTOCAP:BTC.D', timeframe.period, close)
-smaBtcDom          = security('CRYPTOCAP:BTC.D', timeframe.period, sma(close, inputMaAltSzn)) // EMA 12 or SMA 9
+smaBtcDom          = security('CRYPTOCAP:BTC.D', timeframe.period, sma(close, inputMaAltSzn))
 
 plotchar(inputDisplayAltSzn and crossunder(closeBtcDom, smaBtcDom), title='BTC dominance crossing under MA', char='☀,', transp=0, location=location.belowbar, color=color.white, editable=true, size=size.auto)
 plotchar(inputDisplayAltSzn and crossover(closeBtcDom, smaBtcDom), title='BTC Dominance crossing over MA', char='❄', transp=0, location=location.abovebar, color=color.white, editable=true, size=size.auto)
@@ -662,3 +655,10 @@ if isDisplayedMonthlyClose and closePriceM[1] != closePriceM
 
 if isDisplayedMonthlyClose and not na(monthlyCloseLine) and line.get_x2(monthlyCloseLine) != bar_index
     line.set_x2(monthlyCloseLine, bar_index)
+
+////////////////////////////////////////////////////////////////////////////////
+// Custom alerts
+
+alertcondition(lBearCross1h or lBearCrossC, title='Sell signal', message='Sell signal')
+alertcondition(lBullCross1h or lBullCrossC, title='Buy signal', message='Buy signal')
+alertcondition(lBullCross1h or lBearCross1h or lBullCrossC or lBearCrossC, title='Buy or sell signal', message='Buy or sell signal')

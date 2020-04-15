@@ -457,10 +457,24 @@ inputExtendMonthlyClose      = input(title='Extend MC', type=input.bool, defval=
 inputLineWidthOhlcMonthly    = input(title='Line width', type=input.integer, defval=1, minval=1, maxval=5)
 // inputLineTranspOhlcMonthly   = input(title='Line transparency', type=input.integer, defval=50, minval=0, maxval=100)
 dummy68                      = input(title=' ', type=input.bool, defval=false)
+inputShowOhlcHtfYearly       = input(title='Show yearly', type=input.bool, defval=true)
+dummy69                      = input(title=' ', type=input.bool, defval=false)
+inputShowOhlcHtfYearlyOpen   = input(title='Yearly open', type=input.bool, defval=false)
+inputExtendYearlyOpen        = input(title='Extend YO', type=input.bool, defval=false)
+inputShowOhlcHtfYearlyHigh   = input(title='Yearly high', type=input.bool, defval=true)
+inputExtendYearlyHigh        = input(title='Extend YH', type=input.bool, defval=false)
+inputShowOhlcHtfYearlyLow    = input(title='Yearly low', type=input.bool, defval=true)
+inputExtendYearlyLow         = input(title='Extend YL', type=input.bool, defval=false)
+inputShowOhlcHtfYearlyClose  = input(title='Yearly close', type=input.bool, defval=true)
+inputExtendYearlyClose       = input(title='Extend YC', type=input.bool, defval=false)
+inputLineWidthOhlcYearly     = input(title='Line width', type=input.integer, defval=2, minval=1, maxval=5)
+// inputLineTranspOhlcYearly = input(title='Line transparency', type=input.integer, defval=50, minval=0, maxval=100)
+dummy70                      = input(title=' ', type=input.bool, defval=false)
 
 inputLineTranspOhlcDaily     = 40
 inputLineTranspOhlcWeekly    = 40
 inputLineTranspOhlcMonthly   = 40
+inputLineTranspOhlcYearly    = 40
 inputOhlcLabelColor          = #d1d4dc
 
 ////// Daily Open
@@ -666,6 +680,74 @@ if isDisplayedMonthlyClose and closePriceM[1] != closePriceM
 
 if isDisplayedMonthlyClose and not na(monthlyCloseLine) and line.get_x2(monthlyCloseLine) != bar_index
     line.set_x2(monthlyCloseLine, bar_index)
+
+////// Yearly Open
+
+openPriceY = security(syminfo.tickerid, '12M', open)
+isDisplayedYearlyOpen  = inputShowOhlcHtf and inputShowOhlcHtfYearly and inputShowOhlcHtfYearlyOpen and openPriceY and timeframe.period != '12M'
+var line yearlyOpenLine  = na
+
+if isDisplayedYearlyOpen and openPriceY[1] != openPriceY
+    if not inputExtendYearlyOpen
+        line.set_x2(yearlyOpenLine, bar_index)
+        line.set_extend(yearlyOpenLine, extend.none)
+    yearlyOpenLine := line.new(bar_index, openPriceY, bar_index, openPriceY, extend= inputExtendYearlyOpen ? extend.right : extend.none, color=color.new(inputOhlcLabelColor, inputLineTranspOhlcYearly), width=inputLineWidthOhlcYearly)
+    if inputShowOhlcLabels
+        label.new(bar_index, openPriceY, 'YO', style=label.style_none, textcolor=color.new(inputOhlcLabelColor, inputLineTranspOhlcYearly))
+
+if isDisplayedYearlyOpen and not na(yearlyOpenLine) and line.get_x2(yearlyOpenLine) != bar_index
+    line.set_x2(yearlyOpenLine, bar_index)
+
+////// Yearly High
+
+highPriceY = security(syminfo.tickerid, '12M', high)
+isDisplayedYearlyHigh  = inputShowOhlcHtf and inputShowOhlcHtfYearly and inputShowOhlcHtfYearlyHigh and highPriceY and timeframe.period != '12M'
+var line yearlyHighLine  = na
+
+if isDisplayedYearlyHigh and highPriceY[1] != highPriceY
+    if not inputExtendYearlyHigh
+        line.set_x2(yearlyHighLine, bar_index)
+        line.set_extend(yearlyHighLine, extend.none)
+    yearlyHighLine := line.new(bar_index, highPriceY, bar_index, highPriceY, extend=inputExtendYearlyHigh ? extend.right : extend.none, color=color.new(inputOhlcLabelColor, inputLineTranspOhlcYearly), width=inputLineWidthOhlcYearly)
+    if inputShowOhlcLabels
+        label.new(bar_index, highPriceY, 'YH', style=label.style_none, textcolor=color.new(inputOhlcLabelColor, inputLineTranspOhlcYearly))
+
+if isDisplayedYearlyHigh and not na(yearlyHighLine) and line.get_x2(yearlyHighLine) != bar_index
+    line.set_x2(yearlyHighLine, bar_index)
+
+////// Yearly Low
+
+lowPriceY = security(syminfo.tickerid, '12M', low)
+isDisplayedYearlyLow  = inputShowOhlcHtf and inputShowOhlcHtfYearly and inputShowOhlcHtfYearlyLow and lowPriceY and timeframe.period != '12M'
+var line yearlyLowLine  = na
+
+if isDisplayedYearlyLow and lowPriceY[1] != lowPriceY
+    if not inputExtendYearlyLow
+        line.set_x2(yearlyLowLine, bar_index)
+        line.set_extend(yearlyLowLine, extend.none)
+    yearlyLowLine := line.new(bar_index, lowPriceY, bar_index, lowPriceY, extend=inputExtendYearlyLow ? extend.right : extend.none, color=color.new(inputOhlcLabelColor, inputLineTranspOhlcYearly), width=inputLineWidthOhlcYearly)
+    if inputShowOhlcLabels
+        label.new(bar_index, lowPriceY, 'YL', style=label.style_none, textcolor=color.new(inputOhlcLabelColor, inputLineTranspOhlcYearly))
+
+if isDisplayedYearlyLow and not na(yearlyLowLine) and line.get_x2(yearlyLowLine) != bar_index
+    line.set_x2(yearlyLowLine, bar_index)
+
+////// Yearly Close
+
+closePriceY = security(syminfo.tickerid, '12M', close)
+isDisplayedYearlyClose  = inputShowOhlcHtf and inputShowOhlcHtfYearly and inputShowOhlcHtfYearlyClose and closePriceY and timeframe.period != '12M'
+var line yearlyCloseLine  = na
+
+if isDisplayedYearlyClose and closePriceY[1] != closePriceY
+    if not inputExtendYearlyClose
+        line.set_x2(yearlyCloseLine, bar_index)
+        line.set_extend(yearlyCloseLine, extend.none)
+    yearlyCloseLine := line.new(bar_index, closePriceY, bar_index, closePriceY, extend=inputExtendYearlyClose ? extend.right : extend.none, color=color.new(inputOhlcLabelColor, inputLineTranspOhlcYearly), width=inputLineWidthOhlcYearly)
+    if inputShowOhlcLabels
+        label.new(bar_index, closePriceY, 'YC', style=label.style_none, textcolor=color.new(inputOhlcLabelColor, inputLineTranspOhlcYearly))
+
+if isDisplayedYearlyClose and not na(yearlyCloseLine) and line.get_x2(yearlyCloseLine) != bar_index
+    line.set_x2(yearlyCloseLine, bar_index)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Custom alerts

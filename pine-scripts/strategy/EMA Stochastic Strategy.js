@@ -2,7 +2,7 @@
 // © flo5k5
 
 //@version=4
-study(title='5 moving averages - Flo5k5', shorttitle='5 MA - Flo5k5', overlay=true)
+study(title='EMA/Stochastic Strategy - Flo5k5', shorttitle='EMA/Stoch - Flo5k5', overlay=true)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Variables
@@ -13,6 +13,8 @@ colorGreen  = #00FF00
 colorYellow = #FFEB3B
 colorOrange = #FF9800
 colorRed    = #F44336
+colorLong   = #00FEFF
+colorShort  = #EC03EA
 
 ////////////////////////////////////////////////////////////////////////////////
 // MAs
@@ -95,3 +97,72 @@ plot(inputShowSmas and inputShowMa2 and ma2 != 0 ? ma2 : na, color=colorGreen, l
 plot(inputShowSmas and inputShowMa3 and ma3 != 0 ? ma3 : na, color=colorYellow, linewidth=inputLinewidth, transp=inputSmaTransparency, title='MA 3')
 plot(inputShowSmas and inputShowMa4 and ma4 != 0 ? ma4 : na, color=colorOrange, linewidth=inputLinewidth, transp=inputSmaTransparency, title='MA 4')
 plot(inputShowSmas and inputShowMa5 and ma5 != 0 ? ma5 : na, color=colorRed, linewidth=inputLinewidth, transp=inputSmaTransparency, title='MA 5')
+
+////////////////////////////////////////////////////////////////////////////////
+// Stoch RSI 
+
+dummy3                   = input(title='//////////////////////////////', type=input.bool, defval=false)
+inputShowStochRsiCrosses = input(title='MTF Stoch RSI crosses', type=input.bool, defval=true)
+dummy31                  = input(title=' ', type=input.bool, defval=false)
+inputOffsetCross         = input(title='Crosses offset', defval=0, type=input.integer)
+inputLengthRsi           = input(type=input.integer, title='RSI Length', defval=14, minval=1)
+inputLengthStoch         = input(type=input.integer, title='Stoch Length', defval=14, minval=1)
+inputSmoothK             = input(type=input.integer, title='Smooth K', defval=3, minval=1)
+inputSmoothD             = input(type=input.integer, title='Smooth D', defval=3, minval=1)
+inputRsiSrc              = input(title='RSI Source', defval=close)
+dummy32                  = input(title=' ', type=input.bool, defval=false)
+inputShowOnlyC           = input(title='Show only current TF', type=input.bool, defval=true)
+inputShowC               = input(title='Show current TF', type=input.bool, defval=true)
+inputShow1H              = input(title='Show 1h', type=input.bool, defval=true)
+inputShow4H              = input(title='Show 4h', type=input.bool, defval=true)
+inputShow1D              = input(title='Show D', type=input.bool, defval=true)
+inputShow1W              = input(title='Show W', type=input.bool, defval=true)
+
+getStochRsi(rsiSource, rsiLength, lengthStoch, smoothK, smoothD) =>
+    rsi = rsi(rsiSource, rsiLength)
+    k   = sma(stoch(rsi, rsi, rsi, lengthStoch), smoothK)
+    d   = sma(k, smoothD)
+    [rsi, k, d]
+
+getStochRsiCross(rsiSource, rsiLength, lengthStoch, smoothK, smoothD) => 
+    [rsi, k, d] = getStochRsi(rsiSource, rsiLength, lengthStoch, smoothK, smoothD)
+    lBearCross = crossunder(k, d) and d >= 80
+    // mBearCross  = crossunder(k, d) and d > 20 and d < 80
+    // sBearCross = crossunder(k, d) and d >= 0 and d <= 20
+    sBearCross = crossunder(k, d) and d < 80
+    lBullCross = crossover(k, d) and d < 20
+    // lBullCross = crossover(k, d) and d >=0 and d <= 20
+    // mBullCross  = crossover(k, d) and d > 20 and d < 80
+    sBullCross  = crossover(k, d) and d >= 20
+    [rsi, k, d, lBearCross, sBearCross, lBullCross, sBullCross]
+
+[rsiC, kC, dC, lBearCrossC, sBearCrossC, lBullCrossC, sBullCrossC] = getStochRsiCross(inputRsiSrc, inputLengthRsi, inputLengthStoch, inputSmoothK, inputSmoothD)
+stochKC          = sma(stoch(close, high, low, inputLengthStoch), inputSmoothK)
+stochDC          = sma(stochKC, inputSmoothD)
+lBearStochCrossC = crossunder(stochKC, stochDC) and stochDC >= 80
+sBearStochCrossC = crossunder(stochKC, stochDC) and stochDC < 80
+lBullStochCrossC = crossover(stochKC, stochDC) and stochDC < 20
+sBullStochCrossC = crossover(stochKC, stochDC) and stochDC >= 20
+srColor          = lBullStochCrossC or sBullStochCrossC or lBullCrossC or sBullCrossC ? (lBullStochCrossC or lBullCrossC ? color.new(colorLong, 0) : color.new(colorLong, 60)) : (lBearStochCrossC or lBearCrossC ? color.new(colorShort, 0) : color.new(colorShort, 60))
+plotshape(inputShowC and inputShowStochRsiCrosses and ((timeframe.isintraday and not(timeframe.multiplier == 240 or timeframe.multiplier == 60)) or inputShowOnlyC) and (lBearStochCrossC or sBearStochCrossC or lBullStochCrossC or sBullStochCrossC or lBearCrossC or sBearCrossC or lBullCrossC or sBullCrossC)? close : na,  title='Cross Stoch RSI Current TF', style=shape.circle, text='', location=location.absolute, color=srColor)
+
+////////////////////////////////////////////////////////////////////////////////
+// SAR
+
+dummy1            = input(title='//////////////////////////////', type=input.bool, defval=false)
+inputShowSar      = input(title='SAR', type=input.bool, defval=false)
+dummy11           = input(title=' ', type=input.bool, defval=false)
+inputStartSar     = input(0.2, title='Start', minval=0.1)
+inputIncSar       = input(0.2, title='Increment', minval=0.1)
+inputMaxSar       = input(0.2, title='Maximum', minval=0.1)
+inputLineWidthSar = input(title='Line width', type=input.integer, defval=2, minval=1, maxval=5)
+
+sarValue = sar(inputStartSar, inputIncSar, inputMaxSar)
+plot(inputShowSar ? sarValue : na, style=plot.style_cross, linewidth=inputLineWidthSar, color=sarValue <= low ? colorGreen : colorRed )
+
+////////////////////////////////////////////////////////////////////////////////
+// Custom alerts
+
+alertcondition(lBearCross1h or lBearCrossC, title='Sell signal', message='Sell signal')
+alertcondition(lBullCross1h or lBullCrossC, title='Buy signal', message='Buy signal')
+alertcondition(lBullCross1h or lBearCross1h or lBullCrossC or lBearCrossC, title='Buy or sell signal', message='Buy or sell signal')

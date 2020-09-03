@@ -2,12 +2,7 @@
 // © flo5k5
 
 //@version=4
-study(title='Bollinger bands (w/ log, 2 deviations) - Flo5k5', shorttitle='Bollinger bands - Flo5k5', overlay=true)
-
-////////////////////////////////////////////////////////////////////////////////
-// Variables
-
-lineWidth   = 1
+study(title='Bollinger bands (w/ log, 2 deviations) - Flo5k5', shorttitle='BB Log - 2 Multi - Flo5k5', overlay=true)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Bollinger Bands 

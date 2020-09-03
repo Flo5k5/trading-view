@@ -2,46 +2,41 @@
 // © flo5k5
 
 //@version=4
-study(title='Extendable OHLC (daily, weekly, monthly) - Flo5k5', shorttitle='MTF OHLC - Flo5k5', overlay=true)
-
-////////////////////////////////////////////////////////////////////////////////
-// Variables
-
-lineWidth   = 1
+study(title='Extendable OHLC (1D, 1W, 1M, 1Y) - Flo5k5', shorttitle='MTF OHLC - Flo5k5', overlay=true)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Open High Low Close HTF
 //
-// Tradingview script/F8yZU30q-Open-High-Low-HTF
+// Credit: Tradingview script/F8yZU30q-Open-High-Low-HTF
 // 
 
 dummy6                       = input(title='//////////////////////////////', type=input.bool, defval=false)
 inputShowOhlcHtf             = input(title='OHLC HTF', type=input.bool, defval=true)
 dummy61                      = input(title=' ', type=input.bool, defval=false)
-inputShowOhlcLabels          = input(title='Show labels', type=input.bool, defval=false)
+inputShowOhlcLabels          = input(title='Show labels', type=input.bool, defval=true)
 dummy62                      = input(title=' ', type=input.bool, defval=false)
 inputShowOhlcHtfDaily        = input(title='Show daily', type=input.bool, defval=false)
 dummy63                      = input(title=' ', type=input.bool, defval=false)
 inputShowOhlcHtfDailyOpen    = input(title='Daily open', type=input.bool, defval=false)
 inputExtendDaylyOpen         = input(title='Extend DO', type=input.bool, defval=false)
-inputShowOhlcHtfDailyHigh    = input(title='Daily high', type=input.bool, defval=false)
+inputShowOhlcHtfDailyHigh    = input(title='Daily high', type=input.bool, defval=true)
 inputExtendDaylyHigh         = input(title='Extend DH', type=input.bool, defval=false)
-inputShowOhlcHtfDailyLow     = input(title='Daily low', type=input.bool, defval=false)
+inputShowOhlcHtfDailyLow     = input(title='Daily low', type=input.bool, defval=true)
 inputExtendDaylyLow          = input(title='Extend DL', type=input.bool, defval=false)
-inputShowOhlcHtfDailyClose   = input(title='Daily close', type=input.bool, defval=false)
+inputShowOhlcHtfDailyClose   = input(title='Daily close', type=input.bool, defval=true)
 inputExtendDaylyClose        = input(title='Extend DC', type=input.bool, defval=false)
 inputLineWidthOhlcDaily      = input(title='Line width', type=input.integer, defval=1, minval=1, maxval=5)
 // inputLineTranspOhlcDaily   = input(title='Line transparency', type=input.integer, defval=50, minval=0, maxval=100)
 dummy64                      = input(title=' ', type=input.bool, defval=false)
-inputShowOhlcHtfWeekly       = input(title='Show weekly', type=input.bool, defval=false)
+inputShowOhlcHtfWeekly       = input(title='Show weekly', type=input.bool, defval=true)
 dummy65                      = input(title=' ', type=input.bool, defval=false)
 inputShowOhlcHtfWeeklyOpen   = input(title='Weekly open', type=input.bool, defval=false)
 inputExtendWeeklyOpen        = input(title='Extend WO', type=input.bool, defval=false)
-inputShowOhlcHtfWeeklyHigh   = input(title='Weekly high', type=input.bool, defval=false)
+inputShowOhlcHtfWeeklyHigh   = input(title='Weekly high', type=input.bool, defval=true)
 inputExtendWeeklyHigh        = input(title='Extend WH', type=input.bool, defval=false)
-inputShowOhlcHtfWeeklyLow    = input(title='Weekly low', type=input.bool, defval=false)
+inputShowOhlcHtfWeeklyLow    = input(title='Weekly low', type=input.bool, defval=true)
 inputExtendWeeklyLow         = input(title='Extend WL', type=input.bool, defval=false)
-inputShowOhlcHtfWeeklyClose  = input(title='Weekly close', type=input.bool, defval=false)
+inputShowOhlcHtfWeeklyClose  = input(title='Weekly close', type=input.bool, defval=true)
 inputExtendWeeklyClose       = input(title='Extend WC', type=input.bool, defval=false)
 inputLineWidthOhlcWeekly     = input(title='Line width', type=input.integer, defval=1, minval=1, maxval=5)
 // inputLineTranspOhlcWeekly   = input(title='Line transparency', type=input.integer, defval=50, minval=0, maxval=100)
@@ -56,7 +51,7 @@ inputShowOhlcHtfMonthlyLow   = input(title='Monthly low', type=input.bool, defva
 inputExtendMonthlyLow        = input(title='Extend ML', type=input.bool, defval=false)
 inputShowOhlcHtfMonthlyClose = input(title='Monthly close', type=input.bool, defval=true)
 inputExtendMonthlyClose      = input(title='Extend MC', type=input.bool, defval=false)
-inputLineWidthOhlcMonthly    = input(title='Line width', type=input.integer, defval=1, minval=1, maxval=5)
+inputLineWidthOhlcMonthly    = input(title='Line width', type=input.integer, defval=2, minval=1, maxval=5)
 // inputLineTranspOhlcMonthly   = input(title='Line transparency', type=input.integer, defval=50, minval=0, maxval=100)
 dummy68                      = input(title=' ', type=input.bool, defval=false)
 inputShowOhlcHtfYearly       = input(title='Show yearly', type=input.bool, defval=true)

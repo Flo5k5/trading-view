@@ -24,7 +24,7 @@ lengthRSI    = input(14, minval=1, title="RSI length")
 
 rsi1 = rsi(src, lengthRSI)
 
-rsiP = plot(rsi1, color=colorYellow, title="RSI", transp=0, linewidth=2)
+rsiP = plot(inputShowRSI ? rsi1 : na, color=colorYellow, title="RSI", transp=0, linewidth=2)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Stoch 
@@ -39,8 +39,8 @@ inputSmoothD      = input(title="Smooth D", type=input.integer, defval=3, minval
 k                 = sma(stoch(close, high, low, inputLengthStoch1), inputSmoothK)
 d                 = sma(k, inputSmoothD)
 
-plot(k, color=colorBlue, title="K", transp=0, linewidth=1)
-plot(d, color=colorRed, title="D", transp=0, linewidth=1)
+plot(inputShowStoch ? k : na, color=colorBlue, title="K", transp=0, linewidth=1)
+plot(inputShowStoch ? d : na, color=colorRed, title="D", transp=0, linewidth=1)
 
 plotchar(inputShowStoch and crossunder(k, d), char='↓', transp=0, location=location.top, color=color.white, editable=true, size=size.auto)
 plotchar(inputShowStoch and crossover(k, d), char='↑', transp=0, location=location.bottom, color=color.white, editable=true, size=size.auto)
@@ -65,8 +65,8 @@ getStochRsi(rsiSource, rsiLength, lengthStoch, smoothK, smoothD) =>
 
 [rsi2, k2, d2] =  getStochRsi(inputRsiSrc, inputLengthRsi, inputLengthStoch2, inputSRsiK, inputSRsiD)
 
-plot(k2, color=colorBlue, title="Stock RSI K", transp=0, linewidth=1)
-plot(d2, color=colorRed, title="Stoch RSI D", transp=0, linewidth=1)
+plot(inputShowStochRsi ? k2 : na, color=colorBlue, title="Stock RSI K", transp=0, linewidth=1)
+plot(inputShowStochRsi ? d2 : na, color=colorRed, title="Stoch RSI D", transp=0, linewidth=1)
 
 plotchar(inputShowStochRsi and crossunder(k2, d2), char='↓', transp=0, location=location.top, color=color.white, editable=true, size=size.auto)
 plotchar(inputShowStochRsi and crossover(k2, d2), char='↑', transp=0, location=location.bottom, color=color.white, editable=true, size=size.auto)

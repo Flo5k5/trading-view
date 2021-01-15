@@ -58,10 +58,10 @@ inputSRsiK        = input(type=input.integer, title='Smooth K', defval=3, minval
 inputSRsiD        = input(type=input.integer, title='Smooth D', defval=3, minval=1)
 
 getStochRsi(rsiSource, rsiLength, lengthStoch, smoothK, smoothD) =>
-    rsi = rsi(rsiSource, rsiLength)
-    k   = sma(stoch(rsi, rsi, rsi, lengthStoch), smoothK)
-    d   = sma(k, smoothD)
-    [rsi, k, d]
+    _rsi = rsi(rsiSource, rsiLength)
+    _k   = sma(stoch(_rsi, _rsi, _rsi, lengthStoch), smoothK)
+    _d   = sma(_k, smoothD)
+    [_rsi, _k, _d]
 
 [rsi2, k2, d2] =  getStochRsi(inputRsiSrc, inputLengthRsi, inputLengthStoch2, inputSRsiK, inputSRsiD)
 
@@ -91,3 +91,30 @@ plot100 = plot(series=100, transp=100)
 
 fill(plot1=plot0, plot2=plot20, color=colorGreen, transp=80)
 fill(plot1=plot80, plot2=plot100, color=colorRed, transp=80)
+
+////////////////////////////////////////////////////////////////////////////////
+// Alerts
+
+// Stochastic
+alertcondition(crossover(k, d), title='Stoch K crossover D', message='Stoch Bullish cross')
+alertcondition(crossunder(k, d), title='Stoch K crossunder D', message='Stoch Bearish cross')
+alertcondition(crossover(k, 80), title='Stoch K crossover 80', message='Stoch K over 80')
+alertcondition(crossunder(k, 80), title='Stoch K crossunder 80', message='Stoch K under 80')
+alertcondition(crossover(k, 70), title='Stoch K crossover 70', message='Stoch K over 70')
+alertcondition(crossunder(k, 70), title='Stoch K crossunder 70', message='Stoch K under 70')
+alertcondition(crossover(k, 30), title='Stoch K crossover 30', message='Stoch K over 30')
+alertcondition(crossunder(k, 30), title='Stoch K crossunder 30', message='Stoch K under 30')
+alertcondition(crossover(k, 20), title='Stoch K crossover 20', message='Stoch K over 20')
+alertcondition(crossunder(k, 20), title='Stoch K crossunder 20', message='Stoch K under 20')
+
+// StochasticRsi
+alertcondition(crossover(k2, d2), title='StochRsi K crossover D', message='StochRsi Bullish cross')
+alertcondition(crossunder(k2, d2), title='StochRsi K crossunder D', message='StochRsi Bearish cross')
+alertcondition(crossover(k2, 80), title='StochRsi K crossover 80', message='StochRsi K over 80')
+alertcondition(crossunder(k2, 80), title='StochRsi K crossunder 80', message='StochRsi K under 80')
+alertcondition(crossover(k2, 70), title='StochRsi K crossover 70', message='StochRsi K over 70')
+alertcondition(crossunder(k2, 70), title='StochRsi K crossunder 70', message='StochRsi K under 70')
+alertcondition(crossover(k2, 30), title='StochRsi K crossover 30', message='StochRsi K over 30')
+alertcondition(crossunder(k2, 30), title='StochRsi K crossunder 30', message='StochRsi K under 30')
+alertcondition(crossover(k2, 20), title='StochRsi K crossover 20', message='StochRsi K over 20')
+alertcondition(crossunder(k2, 20), title='StochRsi K crossunder 20', message='StochRsi K under 20')

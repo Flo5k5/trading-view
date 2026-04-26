@@ -163,6 +163,6 @@ plot(inputShowSar ? sarValue : na, style=plot.style_cross, linewidth=inputLineWi
 ////////////////////////////////////////////////////////////////////////////////
 // Custom alerts
 
-alertcondition(lBearCross1h or lBearCrossC, title='Sell signal', message='Sell signal')
-alertcondition(lBullCross1h or lBullCrossC, title='Buy signal', message='Buy signal')
-alertcondition(lBullCross1h or lBearCross1h or lBullCrossC or lBearCrossC, title='Buy or sell signal', message='Buy or sell signal')
+alertcondition(lBearCross1h or lBearCrossC, title='Sell signal', message='[ema-stochastic-strategy-v1] Sell signal')
+alertcondition(lBullCross1h or lBullCrossC, title='Buy signal', message='[ema-stochastic-strategy-v1] Buy signal')
+alertcondition(lBullCross1h or lBearCross1h or lBullCrossC or lBearCrossC, title='Buy or sell signal', message='[ema-stochastic-strategy-v1] Buy or sell signal')

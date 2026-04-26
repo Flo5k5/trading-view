@@ -31,7 +31,7 @@ inputSmoothingMa2    = input.string('EMA', title='Smoothing MA2', options=['RMA'
 inputShowMa2         = input.bool(false, title='Show MA 2')
 dummy03              = input.bool(false, title=' ')
 inputMa3             = input.int(20, title='MA 3', minval=0)
-inputSmoothingMa3    = input.string('SMA', title='Smoothing MA3', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
+inputSmoothingMa3    = input.string('EMA', title='Smoothing MA3', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
 inputShowMa3         = input.bool(true, title='Show MA 3')
 dummy04              = input.bool(false, title=' ')
 inputMa4             = input.int(50, title='MA 4', minval=0)
@@ -42,7 +42,7 @@ inputMa5             = input.int(200, title='MA 5', minval=0)
 inputSmoothingMa5    = input.string('SMA', title='Smoothing MA5', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
 inputShowMa5         = input.bool(true, title='Show MA 5')
 dummy06              = input.bool(false, title=' ')
-inputLinewidth       = input.int(2, title='Line width', minval=1, maxval=5)
+inputLinewidth       = input.int(1, title='Line width', minval=1, maxval=5)
 inputSmaTransparency = input.int(20, title='MA transparency', minval=0, maxval=100)
 inputAlmaOffset      = input.float(0.85, title='ALMA Offset', minval=0)
 inputAlmaSigma       = input.float(6, title='ALMA Sigma', minval=0)
@@ -175,6 +175,50 @@ plotshape(not inputShowOnlyC and inputShow12H and inputShowStochRsiCrosses and (
 plotshape(not inputShowOnlyC and inputShow1D  and inputShowStochRsiCrosses and (lBearCross1D  or sBearCross1D  or lBullCross1D  or sBullCross1D)  ? close : na, title='Cross Stoch RSI D',   style=shape.circle, text='D',   location=location.absolute, color=crossColor(lBullCross1D,  sBullCross1D,  lBearCross1D,  sBearCross1D))
 plotshape(not inputShowOnlyC and inputShow3D  and inputShowStochRsiCrosses and (lBearCross3D  or sBearCross3D  or lBullCross3D  or sBullCross3D)  ? close : na, title='Cross Stoch RSI 3D',  style=shape.circle, text='3D',  location=location.absolute, color=crossColor(lBullCross3D,  sBullCross3D,  lBearCross3D,  sBearCross3D))
 plotshape(not inputShowOnlyC and inputShow1W  and inputShowStochRsiCrosses and (lBearCross1W  or sBearCross1W  or lBullCross1W  or sBullCross1W)  ? close : na, title='Cross Stoch RSI W',   style=shape.circle, text='W',   location=location.absolute, color=crossColor(lBullCross1W,  sBullCross1W,  lBearCross1W,  sBearCross1W))
+
+////////////////////////////////////////////////////////////////////////////////
+// RSI background — overbought/oversold zones tinted on the chart background
+// (adapted from "Background color RSI - Flo5k5", migrated to v6 here)
+
+dummy4              = input.bool(false, title='//////////////////////////////')
+inputShowBgRsi      = input.bool(true,  title='RSI background')
+dummy41             = input.bool(false, title=' ')
+inputLengthRsiBg    = input.int(14,    title='RSI BG Length', minval=1)
+inputRsiSrcBg       = input.source(close, title='RSI BG Source')
+inputOvsLvl         = input.int(30,    title='Oversold level',   minval=0, maxval=100)
+inputOvbLvl         = input.int(70,    title='Overbought level', minval=0, maxval=100)
+dummy42             = input.bool(false, title=' ')
+inputShowBgColor    = input.bool(true,  title='Display background color')
+inputShowXOverOB    = input.bool(false, title='Label on RSI cross over Overbought')
+inputShowXUnderOB   = input.bool(true,  title='Label on RSI cross under Overbought (bearish)')
+inputShowXOverOS    = input.bool(true,  title='Label on RSI cross over Oversold (bullish)')
+inputShowXUnderOS   = input.bool(false, title='Label on RSI cross under Oversold')
+dummy43             = input.bool(false, title=' ')
+inputShowRsiLength  = input.bool(true,  title='Display RSI length on label')
+
+rsiBg      = ta.rsi(inputRsiSrcBg, inputLengthRsiBg)
+floorRsiBg = math.floor(rsiBg)
+bgRsiColor = inputShowBgRsi and inputShowBgColor
+   ? (rsiBg <= inputOvsLvl ? color.new(color.green, 90)
+   :  rsiBg >= inputOvbLvl ? color.new(color.red,   90)
+   :                          na)
+   : na
+
+bgcolor(color=bgRsiColor, title='Background color RSI')
+
+rsiBgLabel = inputShowRsiLength ? 'R' + str.tostring(inputLengthRsiBg) : 'R'
+
+if inputShowBgRsi and inputShowXOverOB and ta.crossover(floorRsiBg, inputOvbLvl)
+    label.new(bar_index, high + high * 0.002, text=rsiBgLabel, color=color.lime, style=label.style_label_down, size=size.tiny)
+
+if inputShowBgRsi and inputShowXUnderOB and ta.crossunder(floorRsiBg, inputOvbLvl)
+    label.new(bar_index, high + high * 0.002, text=rsiBgLabel, color=color.red,  style=label.style_label_down, size=size.tiny)
+
+if inputShowBgRsi and inputShowXOverOS and ta.crossover(floorRsiBg, inputOvsLvl)
+    label.new(bar_index, low - low * 0.002, text=rsiBgLabel, color=color.lime, style=label.style_label_up, size=size.tiny)
+
+if inputShowBgRsi and inputShowXUnderOS and ta.crossunder(floorRsiBg, inputOvsLvl)
+    label.new(bar_index, low - low * 0.002, text=rsiBgLabel, color=color.red,  style=label.style_label_up, size=size.tiny)
 
 ////////////////////////////////////////////////////////////////////////////////
 // SAR

@@ -201,48 +201,145 @@ plotshape(not inputShowOnlyC and inputShow3D  and inputShowStochRsiCrosses and (
 plotshape(not inputShowOnlyC and inputShow1W  and inputShowStochRsiCrosses and (lBearCross1W  or sBearCross1W  or lBullCross1W  or sBullCross1W)  ? close : na, title='Cross Stoch RSI W',   style=shape.circle, text='W',   location=location.absolute, color=crossColor(lBullCross1W,  sBullCross1W,  lBearCross1W,  sBearCross1W))
 
 ////////////////////////////////////////////////////////////////////////////////
-// RSI background — overbought/oversold zones tinted on the chart background
-// (adapted from "Background color RSI - Flo5k5", migrated to v6 here)
+// Background — pick a single oscillator source via dropdown.
+// Stacking multiple backgrounds just averages them into mud, so this section
+// keeps it exclusive: pick one of {None, RSI, CCI, Stochastic, Stochastic RSI}.
+//
+// RSI uses 7 colored zones (configurable in the Style tab via input.color()):
+//   ≥ Extremely Overbought  → Color 0  (rouge profond, default)
+//   ≥ Overbought            → Color 1  (rouge)
+//   ≥ Buy                   → Color 2  (vert très léger)
+//   ≥ Neutral               → Color 3  (gris transparent)
+//   ≥ Cold                  → Color 4  (gris transparent)
+//   ≥ Oversold              → Color 5  (bleu)
+//   < Oversold              → Color 6  (violet, extrêmement oversold)
+//
+// CCI / Stochastic / Stoch RSI use simpler 2-zone OB/OS tinting.
 
 dummy4              = input.bool(false, title='//////////////////////////////')
-inputShowBgRsi      = input.bool(true,  title='RSI background')
-dummy41             = input.bool(false, title=' ')
-inputLengthRsiBg    = input.int(14,    title='RSI BG Length', minval=1)
-inputRsiSrcBg       = input.source(close, title='RSI BG Source')
-inputOvsLvl         = input.int(30,    title='Oversold level',   minval=0, maxval=100)
-inputOvbLvl         = input.int(70,    title='Overbought level', minval=0, maxval=100)
-dummy42             = input.bool(false, title=' ')
+inputBgSource       = input.string('RSI', title='Background source', options=['None', 'RSI', 'CCI', 'Stochastic', 'Stochastic RSI'])
 inputShowBgColor    = input.bool(true,  title='Display background color')
-inputShowXOverOB    = input.bool(false, title='Label on RSI cross over Overbought')
-inputShowXUnderOB   = input.bool(true,  title='Label on RSI cross under Overbought (bearish)')
-inputShowXOverOS    = input.bool(true,  title='Label on RSI cross over Oversold (bullish)')
-inputShowXUnderOS   = input.bool(false, title='Label on RSI cross under Oversold')
-dummy43             = input.bool(false, title=' ')
-inputShowRsiLength  = input.bool(true,  title='Display RSI length on label')
+dummy41             = input.bool(false, title=' ')
 
+// === RSI inputs (used when source = "RSI") ===
+inputLengthRsiBg    = input.int(14,    title='RSI Length',                  minval=1)
+inputRsiSrcBg       = input.source(close, title='RSI Source')
+inputRsiExtOvs      = input.int(20,    title='RSI: Extremely Oversold',     minval=0, maxval=100)
+inputRsiOvs         = input.int(30,    title='RSI: Oversold',               minval=0, maxval=100)
+inputRsiCold        = input.int(40,    title='RSI: Cold',                   minval=0, maxval=100)
+inputRsiNeu         = input.int(45,    title='RSI: Neutral',                minval=0, maxval=100)
+inputRsiBuy         = input.int(55,    title='RSI: Buy',                    minval=0, maxval=100)
+inputRsiOvb         = input.int(70,    title='RSI: Overbought',             minval=0, maxval=100)
+inputRsiExtOvb      = input.int(80,    title='RSI: Extremely Overbought',   minval=0, maxval=100)
+dummy42             = input.bool(false, title=' ')
+
+// === CCI inputs (used when source = "CCI") ===
+inputLengthCciBg    = input.int(20,    title='CCI Length', minval=1)
+inputCciSrcBg       = input.source(close, title='CCI Source')
+inputCciOvs         = input.int(-100,  title='CCI: Oversold')
+inputCciOvb         = input.int(100,   title='CCI: Overbought')
+dummy43             = input.bool(false, title=' ')
+
+// === Stochastic / Stoch RSI inputs (length params shared between both) ===
+inputBgStochLen     = input.int(14,    title='Stoch Length',  minval=1)
+inputBgStochSmoothK = input.int(3,     title='Stoch Smooth K', minval=1)
+inputBgStochSmoothD = input.int(3,     title='Stoch Smooth D', minval=1)
+inputBgStochOvs     = input.int(20,    title='Stoch: Oversold',   minval=0, maxval=100)
+inputBgStochOvb     = input.int(80,    title='Stoch: Overbought', minval=0, maxval=100)
+inputBgStochUseK    = input.bool(true, title='Use K')
+inputBgStochUseD    = input.bool(true, title='Use D')
+dummy44             = input.bool(false, title=' ')
+
+// === Cross labels (active for RSI and CCI sources only) ===
+inputShowXOverOB    = input.bool(false, title='Label on cross over Overbought')
+inputShowXUnderOB   = input.bool(true,  title='Label on cross under Overbought (bearish)')
+inputShowXOverOS    = input.bool(true,  title='Label on cross over Oversold (bullish)')
+inputShowXUnderOS   = input.bool(false, title='Label on cross under Oversold')
+inputShowBgLength   = input.bool(true,  title='Display length on label')
+
+// === 7 configurable RSI zone colors (visible in the Style tab) ===
+inputBgRsiColor0    = input.color(color.new(#5C0000, 70), title='RSI Color 0  (≥ Ext. Overbought)')
+inputBgRsiColor1    = input.color(color.new(#FF0000, 80), title='RSI Color 1  (Overbought → Ext. OB)')
+inputBgRsiColor2    = input.color(color.new(#00FF00, 95), title='RSI Color 2  (Buy → Overbought)')
+inputBgRsiColor3    = input.color(color.new(#808080, 95), title='RSI Color 3  (Neutral → Buy)')
+inputBgRsiColor4    = input.color(color.new(#808080, 95), title='RSI Color 4  (Cold → Neutral)')
+inputBgRsiColor5    = input.color(color.new(#2196F3, 80), title='RSI Color 5  (Oversold → Cold)')
+inputBgRsiColor6    = input.color(color.new(#5C00CC, 70), title='RSI Color 6  (< Oversold)')
+
+// === Compute oscillator values ===
 rsiBg      = ta.rsi(inputRsiSrcBg, inputLengthRsiBg)
 floorRsiBg = math.floor(rsiBg)
-bgRsiColor = inputShowBgRsi and inputShowBgColor
-   ? (rsiBg <= inputOvsLvl ? color.new(color.green, 90)
-   :  rsiBg >= inputOvbLvl ? color.new(color.red,   90)
-   :                          na)
+
+cciSma   = ta.sma(inputCciSrcBg, inputLengthCciBg)
+cciDev   = ta.dev(inputCciSrcBg, inputLengthCciBg)
+cciVal   = (inputCciSrcBg - cciSma) / (0.015 * cciDev)
+floorCci = math.floor(cciVal)
+
+stochBgK = ta.sma(ta.stoch(close, high, low, inputBgStochLen), inputBgStochSmoothK)
+stochBgD = ta.sma(stochBgK, inputBgStochSmoothD)
+
+[bgStochRsiR, bgStochRsiK, bgStochRsiD] = getStochRsi(inputRsiSrcBg, inputLengthRsiBg, inputBgStochLen, inputBgStochSmoothK, inputBgStochSmoothD)
+
+// === Per-source background color resolvers ===
+rsiBgZone() =>
+    rsiBg >= inputRsiExtOvb ? inputBgRsiColor0
+     : rsiBg >= inputRsiOvb  ? inputBgRsiColor1
+     : rsiBg >= inputRsiBuy  ? inputBgRsiColor2
+     : rsiBg >= inputRsiNeu  ? inputBgRsiColor3
+     : rsiBg >= inputRsiCold ? inputBgRsiColor4
+     : rsiBg >= inputRsiOvs  ? inputBgRsiColor5
+     :                         inputBgRsiColor6
+
+cciBgZone() =>
+    cciVal >= inputCciOvb ? color.new(color.red,   80)
+     : cciVal <= inputCciOvs ? color.new(color.green, 80)
+     : na
+
+stochBgZone() =>
+    bullish = (inputBgStochUseK and stochBgK <= inputBgStochOvs) or (inputBgStochUseD and stochBgD <= inputBgStochOvs)
+    bearish = (inputBgStochUseK and stochBgK >= inputBgStochOvb) or (inputBgStochUseD and stochBgD >= inputBgStochOvb)
+    bearish ? color.new(color.red, 80) : bullish ? color.new(color.green, 80) : na
+
+stochRsiBgZone() =>
+    bullish = (inputBgStochUseK and bgStochRsiK <= inputBgStochOvs) or (inputBgStochUseD and bgStochRsiD <= inputBgStochOvs)
+    bearish = (inputBgStochUseK and bgStochRsiK >= inputBgStochOvb) or (inputBgStochUseD and bgStochRsiD >= inputBgStochOvb)
+    bearish ? color.new(color.red, 80) : bullish ? color.new(color.green, 80) : na
+
+// === Apply selected background ===
+chosenBgColor = inputShowBgColor
+   ? (inputBgSource == 'RSI'            ? rsiBgZone()
+   :  inputBgSource == 'CCI'            ? cciBgZone()
+   :  inputBgSource == 'Stochastic'     ? stochBgZone()
+   :  inputBgSource == 'Stochastic RSI' ? stochRsiBgZone()
+   :                                      na)
    : na
 
-bgcolor(color=bgRsiColor, title='Background color RSI')
+bgcolor(color=chosenBgColor, title='Background color')
 
-rsiBgLabel = inputShowRsiLength ? 'R' + str.tostring(inputLengthRsiBg) : 'R'
+// === Cross labels — only meaningful for RSI and CCI sources ===
+labelText = inputShowBgLength
+   ? (inputBgSource == 'CCI' ? 'C' + str.tostring(inputLengthCciBg) : 'R' + str.tostring(inputLengthRsiBg))
+   : (inputBgSource == 'CCI' ? 'C' : 'R')
 
-if inputShowBgRsi and inputShowXOverOB and ta.crossover(floorRsiBg, inputOvbLvl)
-    label.new(bar_index, high + high * 0.002, text=rsiBgLabel, color=color.lime, style=label.style_label_down, size=size.tiny)
+// RSI cross labels (use Overbought / Oversold thresholds)
+if inputBgSource == 'RSI' and inputShowXOverOB and ta.crossover(floorRsiBg, inputRsiOvb)
+    label.new(bar_index, high + high * 0.002, text=labelText, color=color.lime, style=label.style_label_down, size=size.tiny)
+if inputBgSource == 'RSI' and inputShowXUnderOB and ta.crossunder(floorRsiBg, inputRsiOvb)
+    label.new(bar_index, high + high * 0.002, text=labelText, color=color.red,  style=label.style_label_down, size=size.tiny)
+if inputBgSource == 'RSI' and inputShowXOverOS and ta.crossover(floorRsiBg, inputRsiOvs)
+    label.new(bar_index, low - low * 0.002, text=labelText, color=color.lime, style=label.style_label_up, size=size.tiny)
+if inputBgSource == 'RSI' and inputShowXUnderOS and ta.crossunder(floorRsiBg, inputRsiOvs)
+    label.new(bar_index, low - low * 0.002, text=labelText, color=color.red,  style=label.style_label_up, size=size.tiny)
 
-if inputShowBgRsi and inputShowXUnderOB and ta.crossunder(floorRsiBg, inputOvbLvl)
-    label.new(bar_index, high + high * 0.002, text=rsiBgLabel, color=color.red,  style=label.style_label_down, size=size.tiny)
-
-if inputShowBgRsi and inputShowXOverOS and ta.crossover(floorRsiBg, inputOvsLvl)
-    label.new(bar_index, low - low * 0.002, text=rsiBgLabel, color=color.lime, style=label.style_label_up, size=size.tiny)
-
-if inputShowBgRsi and inputShowXUnderOS and ta.crossunder(floorRsiBg, inputOvsLvl)
-    label.new(bar_index, low - low * 0.002, text=rsiBgLabel, color=color.red,  style=label.style_label_up, size=size.tiny)
+// CCI cross labels (use ±100 — configurable via inputCciOvb / inputCciOvs)
+if inputBgSource == 'CCI' and inputShowXOverOB and ta.crossover(floorCci, inputCciOvb)
+    label.new(bar_index, high + high * 0.002, text=labelText, color=color.lime, style=label.style_label_down, size=size.tiny)
+if inputBgSource == 'CCI' and inputShowXUnderOB and ta.crossunder(floorCci, inputCciOvb)
+    label.new(bar_index, high + high * 0.002, text=labelText, color=color.red,  style=label.style_label_down, size=size.tiny)
+if inputBgSource == 'CCI' and inputShowXOverOS and ta.crossover(floorCci, inputCciOvs)
+    label.new(bar_index, low - low * 0.002, text=labelText, color=color.lime, style=label.style_label_up, size=size.tiny)
+if inputBgSource == 'CCI' and inputShowXUnderOS and ta.crossunder(floorCci, inputCciOvs)
+    label.new(bar_index, low - low * 0.002, text=labelText, color=color.red,  style=label.style_label_up, size=size.tiny)
 
 ////////////////////////////////////////////////////////////////////////////////
 // SAR

@@ -106,7 +106,9 @@ inputShowOnlyC           = input.bool(true, title='Show only current TF')
 inputShowC               = input.bool(true, title='Show current TF')
 inputShow1H              = input.bool(true, title='Show 1h')
 inputShow4H              = input.bool(true, title='Show 4h')
+inputShow12H             = input.bool(true, title='Show 12h')
 inputShow1D              = input.bool(true, title='Show D')
+inputShow3D              = input.bool(true, title='Show 3D')
 inputShow1W              = input.bool(true, title='Show W')
 
 getStochRsi(rsiSource, rsiLength, lengthStoch, smoothK, smoothD) =>
@@ -137,23 +139,42 @@ sBearStochCrossC = ta.crossunder(stochKC, stochDC) and stochDC < 80
 lBullStochCrossC = ta.crossover(stochKC, stochDC)  and stochDC < 20
 sBullStochCrossC = ta.crossover(stochKC, stochDC)  and stochDC >= 20
 
-// Multi-timeframe 1h — anti-repaint via lookahead_on + previous closed bar [1]
+// Multi-timeframe stack — anti-repaint via lookahead_on + previous closed bar [1].
 // Returns the values from the *previous* HTF bar so the signal never changes
 // once a chart bar closes (even if the current HTF bar is still forming).
-get1hCross() =>
+//
+// Trade-off: signals arrive 1 HTF bar delayed (e.g. 60 min on 1h, 4h on 4h, etc.),
+// which is appropriate for event-driven alerting. See TradingView's Repainting
+// concepts guide for details.
+getStochRsiCrossPrev() =>
     [r, k, d, lBear, sBear, lBull, sBull] = getStochRsiCross(inputRsiSrc, inputLengthRsi, inputLengthStoch, inputSmoothK, inputSmoothD)
     [r[1], k[1], d[1], lBear[1], sBear[1], lBull[1], sBull[1]]
 
-[rsi1h, k1h, d1h, lBearCross1h, sBearCross1h, lBullCross1h, sBullCross1h] = request.security(syminfo.tickerid, "60", get1hCross(), lookahead = barmerge.lookahead_on)
-
-// TODO V2: implement 4H / 1D / 1W using inputShow4H / inputShow1D / inputShow1W
-//          on the same get*Cross() pattern with lookahead_on + [1].
+[rsi1h,  k1h,  d1h,  lBearCross1h,  sBearCross1h,  lBullCross1h,  sBullCross1h]  = request.security(syminfo.tickerid, "60",  getStochRsiCrossPrev(), lookahead = barmerge.lookahead_on)
+[rsi4h,  k4h,  d4h,  lBearCross4h,  sBearCross4h,  lBullCross4h,  sBullCross4h]  = request.security(syminfo.tickerid, "240", getStochRsiCrossPrev(), lookahead = barmerge.lookahead_on)
+[rsi12h, k12h, d12h, lBearCross12h, sBearCross12h, lBullCross12h, sBullCross12h] = request.security(syminfo.tickerid, "720", getStochRsiCrossPrev(), lookahead = barmerge.lookahead_on)
+[rsi1D,  k1D,  d1D,  lBearCross1D,  sBearCross1D,  lBullCross1D,  sBullCross1D]  = request.security(syminfo.tickerid, "D",   getStochRsiCrossPrev(), lookahead = barmerge.lookahead_on)
+[rsi3D,  k3D,  d3D,  lBearCross3D,  sBearCross3D,  lBullCross3D,  sBullCross3D]  = request.security(syminfo.tickerid, "3D",  getStochRsiCrossPrev(), lookahead = barmerge.lookahead_on)
+[rsi1W,  k1W,  d1W,  lBearCross1W,  sBearCross1W,  lBullCross1W,  sBullCross1W]  = request.security(syminfo.tickerid, "W",   getStochRsiCrossPrev(), lookahead = barmerge.lookahead_on)
 
 srColor = lBullStochCrossC or sBullStochCrossC or lBullCrossC or sBullCrossC
    ? (lBullStochCrossC or lBullCrossC ? color.new(colorLong, 0)  : color.new(colorLong, 60))
    : (lBearStochCrossC or lBearCrossC ? color.new(colorShort, 0) : color.new(colorShort, 60))
 
+// Helper: bull cross color when bull, bear cross color when bear (or na otherwise)
+crossColor(lBull, sBull, lBear, sBear) =>
+    lBull or sBull ? (lBull ? color.new(colorLong, 0)  : color.new(colorLong,  60))
+                   : (lBear ? color.new(colorShort, 0) : color.new(colorShort, 60))
+
 plotshape(inputShowC and inputShowStochRsiCrosses and ((timeframe.isintraday and not (timeframe.multiplier == 240 or timeframe.multiplier == 60)) or inputShowOnlyC) and (lBearStochCrossC or sBearStochCrossC or lBullStochCrossC or sBullStochCrossC or lBearCrossC or sBearCrossC or lBullCrossC or sBullCrossC) ? close : na, title='Cross Stoch RSI Current TF', style=shape.circle, text='', location=location.absolute, color=srColor)
+
+// Higher timeframe plots — only when "Show only current TF" is OFF
+plotshape(not inputShowOnlyC and inputShow1H  and inputShowStochRsiCrosses and (lBearCross1h  or sBearCross1h  or lBullCross1h  or sBullCross1h)  ? close : na, title='Cross Stoch RSI 1H',  style=shape.circle, text='1H',  location=location.absolute, color=crossColor(lBullCross1h,  sBullCross1h,  lBearCross1h,  sBearCross1h))
+plotshape(not inputShowOnlyC and inputShow4H  and inputShowStochRsiCrosses and (lBearCross4h  or sBearCross4h  or lBullCross4h  or sBullCross4h)  ? close : na, title='Cross Stoch RSI 4H',  style=shape.circle, text='4H',  location=location.absolute, color=crossColor(lBullCross4h,  sBullCross4h,  lBearCross4h,  sBearCross4h))
+plotshape(not inputShowOnlyC and inputShow12H and inputShowStochRsiCrosses and (lBearCross12h or sBearCross12h or lBullCross12h or sBullCross12h) ? close : na, title='Cross Stoch RSI 12H', style=shape.circle, text='12H', location=location.absolute, color=crossColor(lBullCross12h, sBullCross12h, lBearCross12h, sBearCross12h))
+plotshape(not inputShowOnlyC and inputShow1D  and inputShowStochRsiCrosses and (lBearCross1D  or sBearCross1D  or lBullCross1D  or sBullCross1D)  ? close : na, title='Cross Stoch RSI D',   style=shape.circle, text='D',   location=location.absolute, color=crossColor(lBullCross1D,  sBullCross1D,  lBearCross1D,  sBearCross1D))
+plotshape(not inputShowOnlyC and inputShow3D  and inputShowStochRsiCrosses and (lBearCross3D  or sBearCross3D  or lBullCross3D  or sBullCross3D)  ? close : na, title='Cross Stoch RSI 3D',  style=shape.circle, text='3D',  location=location.absolute, color=crossColor(lBullCross3D,  sBullCross3D,  lBearCross3D,  sBearCross3D))
+plotshape(not inputShowOnlyC and inputShow1W  and inputShowStochRsiCrosses and (lBearCross1W  or sBearCross1W  or lBullCross1W  or sBullCross1W)  ? close : na, title='Cross Stoch RSI W',   style=shape.circle, text='W',   location=location.absolute, color=crossColor(lBullCross1W,  sBullCross1W,  lBearCross1W,  sBearCross1W))
 
 ////////////////////////////////////////////////////////////////////////////////
 // SAR
@@ -171,7 +192,31 @@ plot(inputShowSar ? sarValue : na, style=plot.style_cross, linewidth=inputLineWi
 
 ////////////////////////////////////////////////////////////////////////////////
 // Custom alerts
+//
+// Per-timeframe: pick which ones to enable in TradingView's alert UI. Only the
+// "long" cross variants (k crosses d while d in extreme zone) are exposed —
+// the "short" variants trigger too often to be useful as alerts.
 
-alertcondition(lBearCross1h or lBearCrossC,                                       title='Sell signal',         message='[ema-stochastic-strategy-v1] Sell signal')
-alertcondition(lBullCross1h or lBullCrossC,                                       title='Buy signal',          message='[ema-stochastic-strategy-v1] Buy signal')
-alertcondition(lBullCross1h or lBearCross1h or lBullCrossC or lBearCrossC,        title='Buy or sell signal',  message='[ema-stochastic-strategy-v1] Buy or sell signal')
+// Current timeframe
+alertcondition(lBearCrossC,  title='Sell signal C',   message='[ema-stochastic-strategy-v1] Sell signal — current TF')
+alertcondition(lBullCrossC,  title='Buy signal C',    message='[ema-stochastic-strategy-v1] Buy signal — current TF')
+
+// Higher timeframes (anti-repaint via lookahead_on + [1])
+alertcondition(lBearCross1h,  title='Sell signal 1H',  message='[ema-stochastic-strategy-v1] Sell signal — 1H')
+alertcondition(lBullCross1h,  title='Buy signal 1H',   message='[ema-stochastic-strategy-v1] Buy signal — 1H')
+alertcondition(lBearCross4h,  title='Sell signal 4H',  message='[ema-stochastic-strategy-v1] Sell signal — 4H')
+alertcondition(lBullCross4h,  title='Buy signal 4H',   message='[ema-stochastic-strategy-v1] Buy signal — 4H')
+alertcondition(lBearCross12h, title='Sell signal 12H', message='[ema-stochastic-strategy-v1] Sell signal — 12H')
+alertcondition(lBullCross12h, title='Buy signal 12H',  message='[ema-stochastic-strategy-v1] Buy signal — 12H')
+alertcondition(lBearCross1D,  title='Sell signal D',   message='[ema-stochastic-strategy-v1] Sell signal — Daily')
+alertcondition(lBullCross1D,  title='Buy signal D',    message='[ema-stochastic-strategy-v1] Buy signal — Daily')
+alertcondition(lBearCross3D,  title='Sell signal 3D',  message='[ema-stochastic-strategy-v1] Sell signal — 3-Day')
+alertcondition(lBullCross3D,  title='Buy signal 3D',   message='[ema-stochastic-strategy-v1] Buy signal — 3-Day')
+alertcondition(lBearCross1W,  title='Sell signal W',   message='[ema-stochastic-strategy-v1] Sell signal — Weekly')
+alertcondition(lBullCross1W,  title='Buy signal W',    message='[ema-stochastic-strategy-v1] Buy signal — Weekly')
+
+// Aggregated (any timeframe)
+alertcondition(lBearCrossC or lBearCross1h or lBearCross4h or lBearCross12h or lBearCross1D or lBearCross3D or lBearCross1W,
+   title='Sell signal ANY', message='[ema-stochastic-strategy-v1] Sell signal — any TF')
+alertcondition(lBullCrossC or lBullCross1h or lBullCross4h or lBullCross12h or lBullCross1D or lBullCross3D or lBullCross1W,
+   title='Buy signal ANY',  message='[ema-stochastic-strategy-v1] Buy signal — any TF')

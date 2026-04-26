@@ -13,8 +13,24 @@ colorGreen  = #00FF00
 colorYellow = #FFEB3B
 colorOrange = #FF9800
 colorRed    = #F44336
+colorPurple = #9C27B0
 colorLong   = #00FEFF
 colorShort  = #EC03EA
+
+// Convention couleurs par période (court → long terme) :
+//   period ≤ 10  : bleu    (typique 7, 9)
+//   ≤ 30         : vert    (20, 21)
+//   ≤ 75         : jaune   (50)
+//   ≤ 150        : orange  (100)
+//   ≤ 250        : rouge   (200)
+//   > 250        : violet  (300+)
+maColor(period) =>
+    period <= 10  ? colorBlue
+     : period <= 30  ? colorGreen
+     : period <= 75  ? colorYellow
+     : period <= 150 ? colorOrange
+     : period <= 250 ? colorRed
+     :                 colorPurple
 
 ////////////////////////////////////////////////////////////////////////////////
 // MAs
@@ -22,25 +38,29 @@ colorShort  = #EC03EA
 dummy0               = input.bool(false, title='//////////////////////////////')
 inputShowSmas        = input.bool(true, title='MAs')
 dummy01              = input.bool(false, title=' ')
-inputMa1             = input.int(9, title='MA 1', minval=0)
+inputMa1             = input.int(9, title='MA 1 (default 9 → bleu)', minval=0)
 inputSmoothingMa1    = input.string('EMA', title='Smoothing MA1', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
 inputShowMa1         = input.bool(false, title='Show MA 1')
 dummy02              = input.bool(false, title=' ')
-inputMa2             = input.int(21, title='MA 2', minval=0)
+inputMa2             = input.int(20, title='MA 2 (default 20 → vert)', minval=0)
 inputSmoothingMa2    = input.string('EMA', title='Smoothing MA2', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
-inputShowMa2         = input.bool(false, title='Show MA 2')
+inputShowMa2         = input.bool(true, title='Show MA 2')
 dummy03              = input.bool(false, title=' ')
-inputMa3             = input.int(20, title='MA 3', minval=0)
+inputMa3             = input.int(50, title='MA 3 (default 50 → jaune)', minval=0)
 inputSmoothingMa3    = input.string('EMA', title='Smoothing MA3', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
 inputShowMa3         = input.bool(true, title='Show MA 3')
 dummy04              = input.bool(false, title=' ')
-inputMa4             = input.int(50, title='MA 4', minval=0)
-inputSmoothingMa4    = input.string('SMA', title='Smoothing MA4', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
-inputShowMa4         = input.bool(true, title='Show MA 4')
+inputMa4             = input.int(100, title='MA 4 (default 100 → orange)', minval=0)
+inputSmoothingMa4    = input.string('EMA', title='Smoothing MA4', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
+inputShowMa4         = input.bool(false, title='Show MA 4')
 dummy05              = input.bool(false, title=' ')
-inputMa5             = input.int(200, title='MA 5', minval=0)
-inputSmoothingMa5    = input.string('SMA', title='Smoothing MA5', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
+inputMa5             = input.int(200, title='MA 5 (default 200 → rouge)', minval=0)
+inputSmoothingMa5    = input.string('EMA', title='Smoothing MA5', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
 inputShowMa5         = input.bool(true, title='Show MA 5')
+dummy055             = input.bool(false, title=' ')
+inputMa6             = input.int(300, title='MA 6 (default 300 → violet)', minval=0)
+inputSmoothingMa6    = input.string('EMA', title='Smoothing MA6', options=['RMA', 'SMA', 'EMA', 'WMA', 'VWMA', 'SMMA', 'HullMA', 'LSMA', 'DEMA', 'TEMA'])
+inputShowMa6         = input.bool(false, title='Show MA 6')
 dummy06              = input.bool(false, title=' ')
 inputLinewidth       = input.int(1, title='Line width', minval=1, maxval=5)
 inputSmaTransparency = input.int(20, title='MA transparency', minval=0, maxval=100)
@@ -82,12 +102,16 @@ ma2 = getMa(close, inputMa2, inputSmoothingMa2, inputAlmaOffset, inputAlmaSigma,
 ma3 = getMa(close, inputMa3, inputSmoothingMa3, inputAlmaOffset, inputAlmaSigma, inputMaIsLog)
 ma4 = getMa(close, inputMa4, inputSmoothingMa4, inputAlmaOffset, inputAlmaSigma, inputMaIsLog)
 ma5 = getMa(close, inputMa5, inputSmoothingMa5, inputAlmaOffset, inputAlmaSigma, inputMaIsLog)
+ma6 = getMa(close, inputMa6, inputSmoothingMa6, inputAlmaOffset, inputAlmaSigma, inputMaIsLog)
 
-plot(inputShowSmas and inputShowMa1 and ma1 != 0 ? ma1 : na, color=color.new(colorBlue,   inputSmaTransparency), linewidth=inputLinewidth, title='MA 1')
-plot(inputShowSmas and inputShowMa2 and ma2 != 0 ? ma2 : na, color=color.new(colorGreen,  inputSmaTransparency), linewidth=inputLinewidth, title='MA 2')
-plot(inputShowSmas and inputShowMa3 and ma3 != 0 ? ma3 : na, color=color.new(colorYellow, inputSmaTransparency), linewidth=inputLinewidth, title='MA 3')
-plot(inputShowSmas and inputShowMa4 and ma4 != 0 ? ma4 : na, color=color.new(colorOrange, inputSmaTransparency), linewidth=inputLinewidth, title='MA 4')
-plot(inputShowSmas and inputShowMa5 and ma5 != 0 ? ma5 : na, color=color.new(colorRed,    inputSmaTransparency), linewidth=inputLinewidth, title='MA 5')
+// Couleur dérivée de la période (cf. maColor) : si l'utilisateur change la
+// période d'un slot, la couleur s'adapte automatiquement à la convention.
+plot(inputShowSmas and inputShowMa1 and ma1 != 0 ? ma1 : na, color=color.new(maColor(inputMa1), inputSmaTransparency), linewidth=inputLinewidth, title='MA 1')
+plot(inputShowSmas and inputShowMa2 and ma2 != 0 ? ma2 : na, color=color.new(maColor(inputMa2), inputSmaTransparency), linewidth=inputLinewidth, title='MA 2')
+plot(inputShowSmas and inputShowMa3 and ma3 != 0 ? ma3 : na, color=color.new(maColor(inputMa3), inputSmaTransparency), linewidth=inputLinewidth, title='MA 3')
+plot(inputShowSmas and inputShowMa4 and ma4 != 0 ? ma4 : na, color=color.new(maColor(inputMa4), inputSmaTransparency), linewidth=inputLinewidth, title='MA 4')
+plot(inputShowSmas and inputShowMa5 and ma5 != 0 ? ma5 : na, color=color.new(maColor(inputMa5), inputSmaTransparency), linewidth=inputLinewidth, title='MA 5')
+plot(inputShowSmas and inputShowMa6 and ma6 != 0 ? ma6 : na, color=color.new(maColor(inputMa6), inputSmaTransparency), linewidth=inputLinewidth, title='MA 6')
 
 ////////////////////////////////////////////////////////////////////////////////
 // Stoch RSI

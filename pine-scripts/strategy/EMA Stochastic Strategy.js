@@ -128,8 +128,15 @@ pickMa(label) =>
      : label == 'MA5' ? ma5
      :                  ma6
 
-signalCrossUnder = inputShowSignal and ta.crossunder(close, pickMa(inputMaSignalUnder))
-signalCrossOver  = inputShowSignal and ta.crossover(close,  pickMa(inputMaSignalOver))
+// Pine v6 short-circuit evaluation skips the right operand when the left is
+// false, which can desynchronize ta.* historical state. Compute the cross
+// flags unconditionally and gate visibility with the toggle.
+maUnder          = pickMa(inputMaSignalUnder)
+maOver           = pickMa(inputMaSignalOver)
+crossUnderRaw    = ta.crossunder(close, maUnder)
+crossOverRaw     = ta.crossover(close,  maOver)
+signalCrossUnder = inputShowSignal and crossUnderRaw
+signalCrossOver  = inputShowSignal and crossOverRaw
 
 plotchar(signalCrossUnder, title='Price crossing under MA', char='❄', location=location.belowbar, color=color.white, editable=true, size=size.auto)
 plotchar(signalCrossOver,  title='Price crossing over MA',  char='☀', location=location.abovebar, color=color.white, editable=true, size=size.auto)

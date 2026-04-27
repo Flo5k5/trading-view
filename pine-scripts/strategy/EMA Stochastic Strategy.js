@@ -2,7 +2,7 @@
 // © flo5k5
 
 //@version=6
-indicator(title='EMA/Stochastic Strategy - Flo5k5', shorttitle='EMA/Stoch - Flo5k5', overlay=true)
+indicator(title='EMA/Stochastic Strategy - Flo5k5', shorttitle='EMA/Stoch', overlay=true)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Variables
@@ -344,24 +344,35 @@ labelText = inputShowBgLength
    ? (inputBgSource == 'CCI' ? 'C' + str.tostring(inputLengthCciBg) : 'R' + str.tostring(inputLengthRsiBg))
    : (inputBgSource == 'CCI' ? 'C' : 'R')
 
+// Pre-compute cross flags so Pine v6 short-circuit evaluation does not skip
+// the ta.* calls inside the conditional below (cf. Price/MA cross signals).
+rsiCrossOverOb  = ta.crossover(floorRsiBg, inputRsiOvb)
+rsiCrossUnderOb = ta.crossunder(floorRsiBg, inputRsiOvb)
+rsiCrossOverOs  = ta.crossover(floorRsiBg, inputRsiOvs)
+rsiCrossUnderOs = ta.crossunder(floorRsiBg, inputRsiOvs)
+cciCrossOverOb  = ta.crossover(floorCci, inputCciOvb)
+cciCrossUnderOb = ta.crossunder(floorCci, inputCciOvb)
+cciCrossOverOs  = ta.crossover(floorCci, inputCciOvs)
+cciCrossUnderOs = ta.crossunder(floorCci, inputCciOvs)
+
 // RSI cross labels (use Overbought / Oversold thresholds)
-if inputBgSource == 'RSI' and inputShowXOverOB and ta.crossover(floorRsiBg, inputRsiOvb)
+if inputBgSource == 'RSI' and inputShowXOverOB and rsiCrossOverOb
     label.new(bar_index, high + high * 0.002, text=labelText, color=color.lime, style=label.style_label_down, size=size.tiny)
-if inputBgSource == 'RSI' and inputShowXUnderOB and ta.crossunder(floorRsiBg, inputRsiOvb)
+if inputBgSource == 'RSI' and inputShowXUnderOB and rsiCrossUnderOb
     label.new(bar_index, high + high * 0.002, text=labelText, color=color.red,  style=label.style_label_down, size=size.tiny)
-if inputBgSource == 'RSI' and inputShowXOverOS and ta.crossover(floorRsiBg, inputRsiOvs)
+if inputBgSource == 'RSI' and inputShowXOverOS and rsiCrossOverOs
     label.new(bar_index, low - low * 0.002, text=labelText, color=color.lime, style=label.style_label_up, size=size.tiny)
-if inputBgSource == 'RSI' and inputShowXUnderOS and ta.crossunder(floorRsiBg, inputRsiOvs)
+if inputBgSource == 'RSI' and inputShowXUnderOS and rsiCrossUnderOs
     label.new(bar_index, low - low * 0.002, text=labelText, color=color.red,  style=label.style_label_up, size=size.tiny)
 
 // CCI cross labels (use ±100 — configurable via inputCciOvb / inputCciOvs)
-if inputBgSource == 'CCI' and inputShowXOverOB and ta.crossover(floorCci, inputCciOvb)
+if inputBgSource == 'CCI' and inputShowXOverOB and cciCrossOverOb
     label.new(bar_index, high + high * 0.002, text=labelText, color=color.lime, style=label.style_label_down, size=size.tiny)
-if inputBgSource == 'CCI' and inputShowXUnderOB and ta.crossunder(floorCci, inputCciOvb)
+if inputBgSource == 'CCI' and inputShowXUnderOB and cciCrossUnderOb
     label.new(bar_index, high + high * 0.002, text=labelText, color=color.red,  style=label.style_label_down, size=size.tiny)
-if inputBgSource == 'CCI' and inputShowXOverOS and ta.crossover(floorCci, inputCciOvs)
+if inputBgSource == 'CCI' and inputShowXOverOS and cciCrossOverOs
     label.new(bar_index, low - low * 0.002, text=labelText, color=color.lime, style=label.style_label_up, size=size.tiny)
-if inputBgSource == 'CCI' and inputShowXUnderOS and ta.crossunder(floorCci, inputCciOvs)
+if inputBgSource == 'CCI' and inputShowXUnderOS and cciCrossUnderOs
     label.new(bar_index, low - low * 0.002, text=labelText, color=color.red,  style=label.style_label_up, size=size.tiny)
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -752,6 +752,6 @@ if isDisplayedYearlyClose and not na(yearlyCloseLine) and line.get_x2(yearlyClos
 ////////////////////////////////////////////////////////////////////////////////
 // Custom alerts
 
-alertcondition(lBearCross1h or lBearCrossC, title='Sell signal', message='Sell signal')
-alertcondition(lBullCross1h or lBullCrossC, title='Buy signal', message='Buy signal')
-alertcondition(lBullCross1h or lBearCross1h or lBullCrossC or lBearCrossC, title='Buy or sell signal', message='Buy or sell signal')
+alertcondition(lBearCross1h or lBearCrossC, title='Sell signal', message='[bundle-of-tools-v1] Sell signal')
+alertcondition(lBullCross1h or lBullCrossC, title='Buy signal', message='[bundle-of-tools-v1] Buy signal')
+alertcondition(lBullCross1h or lBearCross1h or lBullCrossC or lBearCrossC, title='Buy or sell signal', message='[bundle-of-tools-v1] Buy or sell signal')
